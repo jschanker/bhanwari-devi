@@ -67,7 +67,8 @@
 }
 
 .ng-header > .option {
-  font-size: 18px;
+  width: 100%;
+  display: flex;
   padding-top: 2px;
 }
 
@@ -88,10 +89,6 @@
   @include breakpoint-mobile {
     width: auto;
   }
-}
-
-.option > .left-item {
-  display: none;
 }
 
 .active {
@@ -148,7 +145,19 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (min-width: 901px) {
+  .ng-header > option {
+    flex-direction: row;
+  }
+  .first-right {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .first-right {
+    order: 1;
+  }
   .ng-header > .dropDown-btn {
     display: inline-block;
     padding: 0;
@@ -160,9 +169,6 @@
     justify-content: center;
     width: 50px;
     height: 50px;
-  }
-  .option > .left-item {
-    display: block;
   }
 
   .option > a {
@@ -178,12 +184,12 @@
   .ng-header > .option {
     position: absolute;
     display: block;
-    width: 100%;
     background-color: #e4f8ca;
     height: 0px;
     z-index: 999;
     transition: all 0.3s ease-in;
     overflow-y: hidden;
+    flex-direction: column;
     top: 89px;
     left: 0px;
   }

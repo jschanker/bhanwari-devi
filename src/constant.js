@@ -24,3 +24,12 @@ export const PATHS = {
   STATE: "/state-dashboard",
   VOLUNTEER_OVERVIEW: "/volunteer/:volunteerId",
 };
+
+export const NAMES = {
+  COURSE: "Courses",
+  MENTOR: "Mentors",
+  CLASS: "Classes",
+  ADMISSION: "Admission",
+  OPPORTUNITIES: "Opportunities",
+  AFE: "Amazon Partnership",
+};

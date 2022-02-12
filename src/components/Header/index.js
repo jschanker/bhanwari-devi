@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { METHODS } from "../../services/api";
 
-import { PATHS } from "../../constant";
+import { PATHS, NAMES } from "../../constant";
 import { actions as userActions } from "../User/redux/action";
 import { hasOneFrom } from "../../common/utils";
 import "./styles.scss";
@@ -41,6 +41,12 @@ const AuthenticatedHeaderOption = () => {
     hasOneFrom(rolesList, ["partner", "partner_view", "partner_edit"]) &&
     partnerId != null;
 
+  const options = ["ADMISSION", "COURSE", "MENTOR", "CLASS", "OPPORTUNITIES", "AFE"];
+  const displayOptions = window.innerWidth < 900 ?
+      options : 
+      options.slice(1, options.length/2 + 1)
+      .concat(options[0]).concat(options.slice(options.length/2 + 1));
+
   return (
     <>
       {canSpecifyUserBaseRole ? (
@@ -73,15 +79,11 @@ const AuthenticatedHeaderOption = () => {
         </>
       ) : null}
 
-      {["ADMISSION", "COURSE", "MENTOR", "CLASS", "OPPORTUNITIES", "AFE"].map(
+      {displayOptions.map(
         (item) => (
           <MenuOption
             item={item}
-            className={
-              ["COURSE", "MENTOR", "CLASS"].includes(item)
-                ? "left-item"
-                : "item"
-            }
+            className={`item${item === options[0] ? " first-right" : ""}`}
           />
         )
       )}
@@ -129,7 +131,7 @@ const AuthenticatedLeftHeaderOption = () => {
 const PublicMenuOption = () => {
   return (
     <>
-      <a className="item" href={PATHS.AFE}>
+      <a className="item first-right" href={PATHS.AFE}>
         Amazon Partnership
       </a>
       <a className="item" href={PATHS.LOGIN}>
@@ -148,14 +150,6 @@ const PublicLeftMenuOption = () => {
 };
 
 const MenuOption = (props) => {
-  const NAMES = {
-    COURSE: "Courses",
-    MENTOR: "Mentors",
-    CLASS: "Classes",
-    ADMISSION: "Admission",
-    OPPORTUNITIES: "Opportunities",
-    AFE: "Amazon Partnership",
-  };
   return (
     <a className={props.className} href={PATHS[props.item]}>
       {NAMES[props.item]}
@@ -174,14 +168,6 @@ function Header() {
         <a href="/">
           <div className="meraki-logo" />
         </a>
-
-        <div className="option">
-          {isAuthenticated ? (
-            <AuthenticatedLeftHeaderOption />
-          ) : (
-            <PublicLeftMenuOption />
-          )}
-        </div>
       </div>
 
       <div className="dropDown-btn">
