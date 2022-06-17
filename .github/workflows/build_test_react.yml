@@ -13,14 +13,13 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build_test"
   build_test:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 15.x]
+        node-version: [10.x, 12.x, 14.x, 15.x]
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -33,15 +32,5 @@ jobs:
       - name: npm ci, build and test
         run: |
           npm ci
-          #npm run build --if-present
-          npm test   
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          npm run build --if-present
+          npm test
