@@ -31,6 +31,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: npm ci, build and test
         run: |
+          REACT_APP_MERAKI_URL = "https://api.merakilearn.org"' > .env
           npm ci
           npm run build --if-present
           npm test
