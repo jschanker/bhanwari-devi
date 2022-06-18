@@ -32,5 +32,9 @@ jobs:
       - name: npm ci, build and test
         run: |
           npm ci
-          node --max_old_space_size=4000 /usr/bin/npm run build --if-present
+          node --max_old_space_size=4000 /home/runner/npm run build --if-present
           npm test
+        env:
+          CI: false
+          REACT_APP_GOOGLE_CLIENT_ID: "34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
+          REACT_APP_MERAKI_URL: "https://api.merakilearn.org/"
