@@ -1,4 +1,8 @@
-import { format as dateFnsFormat, intervalToDuration } from "date-fns";
+import {
+  format as dateFnsFormat,
+  differenceInMinutes as minutesDifference,
+  intervalToDuration 
+} from "date-fns";
 import { zonedTimeToUtc, formatInTimeZone as ftz } from "date-fns-tz";
 
 /**
@@ -116,6 +120,14 @@ export const dateTimeFormat = (date) => {
     finalTime: format(date, "HH : mm"),
     finalDate: format(date, "dd MMM, yyyy"),
   };
+};
+
+const differenceInMinutes = (date1, date2, options) => {
+  return minutesDifference(makeDateFrom(date1), makeDateFrom(date2), options);
+};
+
+export const minutesToNow = (date, options) => {
+  return minutesToNow(new Date(), date, options);
 };
 
 /**

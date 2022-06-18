@@ -1,22 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { timeLeftFormat } from "../../../common/date";
+import { timeLeftFormat, minutesToNow } from "../../../common/date";
+import {
+  getObjectState,
+  getItemInState,
+  setItemInState 
+} from "../../../common/storage";
 import { Button } from "@mui/material";
 import ExternalLink from "../../common/ExternalLink";
 
-function ClassJoinTimerButton({ startTime, link, joinOnClick }) {
+function ClassJoinTimerButton({ startTime, link, joinMinutesBefore=10, joinMinutesAfter=Infinity, joinOnClick }) {
   const ONE_SECOND = 1000; //millisecs
   const ONE_MINUTE = 60 * ONE_SECOND;
   const CAN_JOIN = "Join Now";
-  const TOO_LATE = "less than a minute (too late to join)";
-  const CLASS_PAST_START = "progress or concluded (too late to join)";
+  const minutesToStart = minutesToNow(startTime);
+  // const TOO_LATE = "less than a minute (too late to join)";
+  const CLASS_PAST_START = " more than " + joinMinutesAfter + "in progress" +
+      "or concluded (too late to join)";
+  
   const timeLeftFormatOptions = {
     expiredText: CLASS_PAST_START,
-    precision: [2, 2, 2, 2, 1, 1],
+    /*precision: [2, 2, 2, 2, 1, 1],
     cutoffTextArr: ["", "", "", "", CAN_JOIN, TOO_LATE],
-    cutoffNumArr: [0, 0, 0, 0, 10, 60]
+    cutoffNumArr: [0, 0, 0, 0, 10, 60]*/
   };
   const [timeRemainingMsg, setTimeRemainingMsg] = useState(
     timeLeftFormat(startTime, timeLeftFormatOptions)
+  );
+  const [didJoin, setDidJoin] = useState(
+    getItemInState("TimerButtonComponent", "state", "classesJoined")
   );
 
   useEffect(() => {
@@ -28,7 +39,8 @@ function ClassJoinTimerButton({ startTime, link, joinOnClick }) {
 
   return (
     <>
-      {timeRemainingMsg === CAN_JOIN ? (
+      {minutesToStart <= joinMinutesBefore &&
+       minutesToStart > -joinMinutesAfter ? (
         <ExternalLink
           style={{
             textDecoration: "none"
@@ -38,7 +50,10 @@ function ClassJoinTimerButton({ startTime, link, joinOnClick }) {
           <Button
             variant="contained"
             fullWidth
-            onClick={joinOnClick ? joinOnClick : undefined}
+            onClick={(e) => {
+              setDidJoin(true)
+              typeof joinOnClick === 'function' && joinOnClick(e);
+            }}
           >
             {CAN_JOIN}
           </Button>

@@ -11,8 +11,13 @@ const getObjectState = (namespace, key) => {
   return JSON.parse(localStorage.getItem(lsKey));
 };
 
+export const getItemInState = (namespace, key, itemKey) => {
+  const lsKey = getKeyName(namespace, key);
+  return JSON.parse(localStorage.getItem(lsKey))?.[itemKey];
+};
+
 const setItemInState = (namespace, key, itemKey, value) => {
-  const data = getObjectState(namespace, key);
+  const data = getObjectState(namespace, key) || {};
   if (data[itemKey] !== value) {
     // don't set again if same value
     data[itemKey] = value;
@@ -20,4 +25,9 @@ const setItemInState = (namespace, key, itemKey, value) => {
   }
 };
 
-module.exports = { saveObjectState, getObjectState, setItemInState };
+module.exports = {
+	saveObjectState,
+	getObjectState,
+	getItemInState,
+	setItemInState,
+};
