@@ -6,14 +6,14 @@
     "runtime-main.js": "https://jschanker.github.io/bhanwari-devi/static/js/runtime-main.0095a810.js",
     "runtime-main.js.map": "https://jschanker.github.io/bhanwari-devi/static/js/runtime-main.0095a810.js.map",
     "static/css/2.5560bed7.chunk.css": "https://jschanker.github.io/bhanwari-devi/static/css/2.5560bed7.chunk.css",
-    "static/js/2.26768f4e.chunk.js": "https://jschanker.github.io/bhanwari-devi/static/js/2.26768f4e.chunk.js",
-    "static/js/2.26768f4e.chunk.js.map": "https://jschanker.github.io/bhanwari-devi/static/js/2.26768f4e.chunk.js.map",
+    "static/js/2.40900025.chunk.js": "https://jschanker.github.io/bhanwari-devi/static/js/2.40900025.chunk.js",
+    "static/js/2.40900025.chunk.js.map": "https://jschanker.github.io/bhanwari-devi/static/js/2.40900025.chunk.js.map",
     "index.html": "https://jschanker.github.io/bhanwari-devi/index.html",
-    "precache-manifest.561b8639e1a7ec010c5c16aa9f37a317.js": "https://jschanker.github.io/bhanwari-devi/precache-manifest.561b8639e1a7ec010c5c16aa9f37a317.js",
+    "precache-manifest.976f350616a4fb4e8e11493ba9242c95.js": "https://jschanker.github.io/bhanwari-devi/precache-manifest.976f350616a4fb4e8e11493ba9242c95.js",
     "service-worker.js": "https://jschanker.github.io/bhanwari-devi/service-worker.js",
     "static/css/2.5560bed7.chunk.css.map": "https://jschanker.github.io/bhanwari-devi/static/css/2.5560bed7.chunk.css.map",
     "static/css/main.bc8a9931.chunk.css.map": "https://jschanker.github.io/bhanwari-devi/static/css/main.bc8a9931.chunk.css.map",
-    "static/js/2.26768f4e.chunk.js.LICENSE.txt": "https://jschanker.github.io/bhanwari-devi/static/js/2.26768f4e.chunk.js.LICENSE.txt",
+    "static/js/2.40900025.chunk.js.LICENSE.txt": "https://jschanker.github.io/bhanwari-devi/static/js/2.40900025.chunk.js.LICENSE.txt",
     "static/media/First-img.svg": "https://jschanker.github.io/bhanwari-devi/static/media/First-img.67c7efb5.svg",
     "static/media/Google.svg": "https://jschanker.github.io/bhanwari-devi/static/media/Google.3b55f088.svg",
     "static/media/Group.svg": "https://jschanker.github.io/bhanwari-devi/static/media/Group.426d45f5.svg",
@@ -58,7 +58,7 @@
   "entrypoints": [
     "static/js/runtime-main.0095a810.js",
     "static/css/2.5560bed7.chunk.css",
-    "static/js/2.26768f4e.chunk.js",
+    "static/js/2.40900025.chunk.js",
     "static/css/main.bc8a9931.chunk.css",
     "static/js/main.6b172a11.chunk.js"
   ]
