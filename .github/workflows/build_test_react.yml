@@ -9,7 +9,7 @@ on:
   push:
     branches: [ "gh-deploy-testing", "feat/language-support-classBatch" ]
   pull_request:
-    branches: [ "main", "gh-deploy-testing", "feat/language-support-classBatch" ]
+    types: [ "open", "reopen" ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
