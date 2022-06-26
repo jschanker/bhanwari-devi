@@ -36,7 +36,7 @@ function ClassCard({ item, editClass }) {
   const [showModal, setShowModal] = React.useState(false);
   const [editShowModal, setEditShowModal] = React.useState(false);
   const [deleteCohort, setDeleteCohort] = React.useState(false);
-  const [indicator, setIndicator] = React.useState(false);
+  const [indicator, setIndicator] = React.useState(true);
   const [loading, setLoading] = React.useState(false);
   const user = useSelector(({ User }) => User);
 
@@ -447,10 +447,11 @@ function ClassCard({ item, editClass }) {
               <label>
                 <input
                   type="checkbox"
+                  defaultChecked={indicator}
                   align="center"
                   className="cohort-class"
                   onClick={() => {
-                    setIndicator(true);
+                    setIndicator(!indicator);
                   }}
                 />
                 Enroll all classes of this Batch?

@@ -5,9 +5,9 @@ name: Build and Test React App
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push (to given branches) or pull request events
+  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: ["main", "dev", "classBatch"]
+    branches: [ "main", "dev", "classBatch", "gh-deploy-testing" ]
   pull_request:
     types: [opened, reopened]
 
@@ -38,10 +38,11 @@ jobs:
         env:
           NODE_OPTIONS: "--max-old-space-size=8192"
           CI: false
+          REACT_APP_GOOGLE_CLIENT_ID: "34917283366-b806koktimo2pod1cjas8kn2lcpn7bse.apps.googleusercontent.com"
           REACT_APP_MERAKI_URL: "https://api.merakilearn.org/"
-      # - name: deploy to gh-pages
-      #  uses: peaceiris/actions-gh-pages@v3
-      #  with:
-      #    deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-      #    publish_dir: ./build
-      #    publish_branch: gh-pages
+      - name: deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          publish_dir: ./build
+          publish_branch: jschanker-github-deploy
