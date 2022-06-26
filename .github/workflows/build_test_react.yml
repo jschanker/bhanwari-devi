@@ -7,9 +7,9 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main", "gh-deploy-testing" ]
+    branches: [ "gh-deploy-testing", "feat/language-support-classBatch" ]
   pull_request:
-    branches: [ "main", "gh-deploy-testing" ]
+    branches: [ "main", "gh-deploy-testing", "feat/language-support-classBatch" ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
