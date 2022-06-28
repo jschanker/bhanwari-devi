@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/bhanwari-devi/static/css/main.0dfc88c3.chunk.css",
-    "main.js": "/bhanwari-devi/static/js/main.cd16f57b.chunk.js",
-    "main.js.map": "/bhanwari-devi/static/js/main.cd16f57b.chunk.js.map",
+    "main.js": "/bhanwari-devi/static/js/main.5b6f128b.chunk.js",
+    "main.js.map": "/bhanwari-devi/static/js/main.5b6f128b.chunk.js.map",
     "runtime-main.js": "/bhanwari-devi/static/js/runtime-main.b8cf87b1.js",
     "runtime-main.js.map": "/bhanwari-devi/static/js/runtime-main.b8cf87b1.js.map",
     "static/css/2.5560bed7.chunk.css": "/bhanwari-devi/static/css/2.5560bed7.chunk.css",
     "static/js/2.9bcb0153.chunk.js": "/bhanwari-devi/static/js/2.9bcb0153.chunk.js",
     "static/js/2.9bcb0153.chunk.js.map": "/bhanwari-devi/static/js/2.9bcb0153.chunk.js.map",
     "index.html": "/bhanwari-devi/index.html",
-    "precache-manifest.a08a13244e5b99a9590d838949bb6d33.js": "/bhanwari-devi/precache-manifest.a08a13244e5b99a9590d838949bb6d33.js",
+    "precache-manifest.1624e9f573cff21c5a2fd5b4796b7ea6.js": "/bhanwari-devi/precache-manifest.1624e9f573cff21c5a2fd5b4796b7ea6.js",
     "service-worker.js": "/bhanwari-devi/service-worker.js",
     "static/css/2.5560bed7.chunk.css.map": "/bhanwari-devi/static/css/2.5560bed7.chunk.css.map",
     "static/css/main.0dfc88c3.chunk.css.map": "/bhanwari-devi/static/css/main.0dfc88c3.chunk.css.map",
@@ -80,6 +80,6 @@
     "static/css/2.5560bed7.chunk.css",
     "static/js/2.9bcb0153.chunk.js",
     "static/css/main.0dfc88c3.chunk.css",
-    "static/js/main.cd16f57b.chunk.js"
+    "static/js/main.5b6f128b.chunk.js"
   ]
 }

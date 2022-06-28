@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "c25e8a0618a51085807ced2f3d943aa0",
+    "revision": "c64765d22fc67cbd9485db5eee61e544",
     "url": "/bhanwari-devi/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/bhanwari-devi/static/css/2.5560bed7.chunk.css"
   },
   {
-    "revision": "934dbad07fae85123716",
+    "revision": "9aebfae6376baab448b9",
     "url": "/bhanwari-devi/static/css/main.0dfc88c3.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/bhanwari-devi/static/js/2.9bcb0153.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "934dbad07fae85123716",
-    "url": "/bhanwari-devi/static/js/main.cd16f57b.chunk.js"
+    "revision": "9aebfae6376baab448b9",
+    "url": "/bhanwari-devi/static/js/main.5b6f128b.chunk.js"
   },
   {
     "revision": "f1a4c7f6b40d0f56d34b",
