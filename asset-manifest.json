@@ -6,14 +6,14 @@
     "runtime-main.js": "/static/js/runtime-main.c5f31bc3.js",
     "runtime-main.js.map": "/static/js/runtime-main.c5f31bc3.js.map",
     "static/css/2.5560bed7.chunk.css": "/static/css/2.5560bed7.chunk.css",
-    "static/js/2.43fcd182.chunk.js": "/static/js/2.43fcd182.chunk.js",
-    "static/js/2.43fcd182.chunk.js.map": "/static/js/2.43fcd182.chunk.js.map",
+    "static/js/2.5fa26ffe.chunk.js": "/static/js/2.5fa26ffe.chunk.js",
+    "static/js/2.5fa26ffe.chunk.js.map": "/static/js/2.5fa26ffe.chunk.js.map",
     "index.html": "/index.html",
-    "precache-manifest.dd0488d8852c05237da060cfed69bda6.js": "/precache-manifest.dd0488d8852c05237da060cfed69bda6.js",
+    "precache-manifest.dff519e463bd9ea5d2295f1d408c2b0d.js": "/precache-manifest.dff519e463bd9ea5d2295f1d408c2b0d.js",
     "service-worker.js": "/service-worker.js",
     "static/css/2.5560bed7.chunk.css.map": "/static/css/2.5560bed7.chunk.css.map",
     "static/css/main.59c67607.chunk.css.map": "/static/css/main.59c67607.chunk.css.map",
-    "static/js/2.43fcd182.chunk.js.LICENSE.txt": "/static/js/2.43fcd182.chunk.js.LICENSE.txt",
+    "static/js/2.5fa26ffe.chunk.js.LICENSE.txt": "/static/js/2.5fa26ffe.chunk.js.LICENSE.txt",
     "static/media/ComputerScreen.svg": "/static/media/ComputerScreen.ed255ec6.svg",
     "static/media/ContentTypeCompleted.svg": "/static/media/ContentTypeCompleted.e17d7bf4.svg",
     "static/media/Ellipse.svg": "/static/media/Ellipse.536aa026.svg",
@@ -78,7 +78,7 @@
   "entrypoints": [
     "static/js/runtime-main.c5f31bc3.js",
     "static/css/2.5560bed7.chunk.css",
-    "static/js/2.43fcd182.chunk.js",
+    "static/js/2.5fa26ffe.chunk.js",
     "static/css/main.59c67607.chunk.css",
     "static/js/main.fa253414.chunk.js"
   ]
