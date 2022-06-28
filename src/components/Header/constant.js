@@ -12,7 +12,7 @@ export const MENU_ITEMS = {
   [GET_INVOLVED_KEY]: {
     msgKey: GET_INVOLVED_KEY,
   },
-}
+};
 
 // Mapping from menu item keys to the MSG string keys for their text
 //     For now we'll use the identity (e.g., MENU_MSG_KEY_MAP.ABOUT = 'ABOUT'),

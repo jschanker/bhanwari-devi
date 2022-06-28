@@ -113,7 +113,7 @@ export const PATHWAYS_INFO = [
     type: "internal",
     link: PATHS.MISCELLANEOUS_COURSE,
   },
-],
+];
 
 /*
 export const dateTimeFormat = (date) => {
