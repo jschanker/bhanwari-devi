@@ -61,13 +61,13 @@ const students = {
     // },
 
     {
-      title: <MESSAGE constantKey="VOLUNTEER_WITH_US" />,
+      title: <Message constantKey="VOLUNTEER_WITH_US" />,
       path: PATHS.VOLUNTEER_AUTOMATION,
       type: "internal",
     },
 
     {
-      title: <MESSAGE constantKey="DONATE" />,
+      title: <Message constantKey="DONATE" />,
       path: "https://www.navgurukul.org/donate",
       type: "external",
     },
