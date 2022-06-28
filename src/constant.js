@@ -103,14 +103,14 @@ export const PATHWAYS_INFO = [
     title: "Residential Programmes",
     image: "residential",
     description: "Explore Navgurukul’s on campus Software Engineering courses",
-    type: "internal",
+    type: "external",
     link: PATHS.RESIDENTIAL_COURSE,
   },
   {
-    title: "Open Courses", // or Miscellaneous Courses (Dropdown, Footer)
+    title: "Miscellaneous Courses",
     image: "misc",
     description: "Courses on Android, Game dev projects and more",
-    type: "internal",
+    type: "external",
     link: PATHS.MISCELLANEOUS_COURSE,
   },
 ];
