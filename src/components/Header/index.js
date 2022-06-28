@@ -44,10 +44,10 @@ const PublicMenuOption = ({ leftDrawer, toggleDrawer, handleSearchChange }) => {
   const classes = useStyles();
   // const { language, MSG } = useLanguageConstants(); //useContext(LanguageProvider);
 
-  const menuOpenHandler = (event, menu) => {
+  const menuOpenHandler = (event, menuKey) => {
     setIndicator(event.currentTarget);
-    setDropDownMenu(menu.split(" ").join(""));
-    SetSelectedMenu(menu);
+    setDropDownMenu(menuKey);
+    SetSelectedMenu(menuKey);
   };
 
   const showLoginButton = !useRouteMatch({
@@ -65,7 +65,7 @@ const PublicMenuOption = ({ leftDrawer, toggleDrawer, handleSearchChange }) => {
           <>
             <MenuItem
               onClick={(e) => {
-                menuOpenHandler(e, menu);
+                menuOpenHandler(e, menuKey);
               }}
               sx={{ color: "black" }}
               key={index}
@@ -74,7 +74,7 @@ const PublicMenuOption = ({ leftDrawer, toggleDrawer, handleSearchChange }) => {
                 {/*MSG[getTranslationKey(menu)]*/}
                 <Message constantKey={MENU_ITEMS[menuKey].msgKey} />
               </Typography>
-              {selectedMenu === menu && indicator ? (
+              {selectedMenu === menuKey && indicator ? (
                 <ExpandLessIcon />
               ) : (
                 <ExpandMoreIcon />
