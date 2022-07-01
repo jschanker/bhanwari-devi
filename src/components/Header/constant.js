@@ -1,6 +1,11 @@
 export const LEARN_KEY = 'LEARN';
 export const ABOUT_KEY = 'ABOUT';
 export const GET_INVOLVED_KEY = 'GET_INVOLVED';
+export const ADMIN_ROLE_KEY = 'ADMIN';
+export const STUDENT_ROLE_KEY = 'STUDENT';
+export const VOLUNTEER_ROLE_KEY = 'VOLUNTEER';
+export const PARTNER_ROLE_KEY = 'PARTNER';
+export const ROLE_KEYS = [ADMIN_ROLE_KEY, STUDENT_ROLE_KEY, VOLUNTEER_ROLE_KEY, PARTNER_ROLE_KEY];
 
 export const MENU_ITEMS = {
   [LEARN_KEY]: {
@@ -11,6 +16,18 @@ export const MENU_ITEMS = {
   },
   [GET_INVOLVED_KEY]: {
     msgKey: GET_INVOLVED_KEY,
+  },
+  [ADMIN_ROLE_KEY]: {
+    msgKey: ADMIN_ROLE_KEY,
+  },
+  [STUDENT_ROLE_KEY]: {
+    msgKey: STUDENT_ROLE_KEY,
+  },
+  [VOLUNTEER_ROLE_KEY]: {
+    msgKey: VOLUNTEER_ROLE_KEY,
+  },
+  [PARTNER_ROLE_KEY]: {
+    msgKey: PARTNER_ROLE_KEY,
   },
 };
 
