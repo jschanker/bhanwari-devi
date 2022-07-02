@@ -30,6 +30,8 @@ import {
   ROLES,
   ADMIN_ROLE_KEY as ADMIN,
   PARTNER_ROLE_KEY as PARTNER,
+  PARTNER_VIEW_ROLE_KEY as PARTNER_VIEW,
+  PARTNER_EDIT_ROLE_KEY as PARTNER_EDIT,
   STUDENT_ROLE_KEY as STUDENT,
   VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "./constant";
@@ -125,7 +127,7 @@ function AuthenticatedHeaderOption({
   const partnerGroupId = user.data.user.partner_group_id;
 
   const canSpecifyPartnerGroupId =
-    hasOneFrom(rolesList, [ADMIN, PARTNER, "partner_view"]) &&
+    hasOneFrom(rolesList, [ADMIN, PARTNER, PARTNER_VIEW]) &&
     user.data.user.partner_group_id;
 
   const canSpecifyUserBaseRole = rolesList.indexOf(ADMIN) > -1; //student
@@ -135,7 +137,7 @@ function AuthenticatedHeaderOption({
   const volunteer = rolesList.indexOf(VOLUNTEER) > -1;
 
   const canSpecifyPartner =
-    hasOneFrom(rolesList, [PARTNER, "partner_view", "partner_edit"]) &&
+    hasOneFrom(rolesList, [PARTNER, PARTNER_VIEW, PARTNER_EDIT]) &&
     partnerId != null;
 
   const handleOpenLearn = (event) => {

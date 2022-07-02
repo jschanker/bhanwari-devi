@@ -5,6 +5,8 @@ export const ADMIN_ROLE_KEY = 'ADMIN';
 export const STUDENT_ROLE_KEY = 'STUDENT';
 export const VOLUNTEER_ROLE_KEY = 'VOLUNTEER';
 export const PARTNER_ROLE_KEY = 'PARTNER';
+export const PARTNER_VIEW_ROLE_KEY = 'PARTNER_VIEW';
+export const PARTNER_EDIT_ROLE_KEY = 'PARTNER_EDIT';
 // export const ROLE_KEYS =
 //    [ADMIN_ROLE_KEY, STUDENT_ROLE_KEY, VOLUNTEER_ROLE_KEY, PARTNER_ROLE_KEY];
 // export const DEFAULT_ROLE_KEYS = [STUDENT_ROLE_KEY];
@@ -28,6 +30,16 @@ export const ROLES = {
   [PARTNER_ROLE_KEY]: {
     msgKey: PARTNER_ROLE_KEY,
     savedValue: "partner",
+    isDefault: false,
+  },
+  [PARTNER_VIEW_ROLE_KEY]: {
+    msgKey: PARTNER_ROLE_KEY,
+    savedValue: "partner_view",
+    isDefault: false,
+  },
+  [PARTNER_EDIT_ROLE_KEY]: {
+    msgKey: PARTNER_ROLE_KEY,
+    savedValue: "partner_edit",
     isDefault: false,
   },
 };
