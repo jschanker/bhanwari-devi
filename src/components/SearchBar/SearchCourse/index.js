@@ -57,7 +57,7 @@ function SearchCourse(props) {
   const otherCourseResults = data?.allCourses.filter((item) => {
     return (
       item.course_type === "json" &&
-      !pathwayCourseId.includes(item.id) &&
+      !pathwayCourseIds.includes(item.id) &&
       item.name.toLowerCase().includes(search.toLowerCase())
     );
   });
