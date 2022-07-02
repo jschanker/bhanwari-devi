@@ -1,19 +1,19 @@
 {
   "files": {
     "main.css": "/bhanwari-devi/static/css/main.0dfc88c3.chunk.css",
-    "main.js": "/bhanwari-devi/static/js/main.be5b166e.chunk.js",
-    "main.js.map": "/bhanwari-devi/static/js/main.be5b166e.chunk.js.map",
+    "main.js": "/bhanwari-devi/static/js/main.736f4296.chunk.js",
+    "main.js.map": "/bhanwari-devi/static/js/main.736f4296.chunk.js.map",
     "runtime-main.js": "/bhanwari-devi/static/js/runtime-main.b8cf87b1.js",
     "runtime-main.js.map": "/bhanwari-devi/static/js/runtime-main.b8cf87b1.js.map",
     "static/css/2.5560bed7.chunk.css": "/bhanwari-devi/static/css/2.5560bed7.chunk.css",
-    "static/js/2.f08fd314.chunk.js": "/bhanwari-devi/static/js/2.f08fd314.chunk.js",
-    "static/js/2.f08fd314.chunk.js.map": "/bhanwari-devi/static/js/2.f08fd314.chunk.js.map",
+    "static/js/2.9bcb0153.chunk.js": "/bhanwari-devi/static/js/2.9bcb0153.chunk.js",
+    "static/js/2.9bcb0153.chunk.js.map": "/bhanwari-devi/static/js/2.9bcb0153.chunk.js.map",
     "index.html": "/bhanwari-devi/index.html",
-    "precache-manifest.f0b42456a1f320de46d70916eefbeeb7.js": "/bhanwari-devi/precache-manifest.f0b42456a1f320de46d70916eefbeeb7.js",
+    "precache-manifest.17f948ada98d621791b9756522d32d8b.js": "/bhanwari-devi/precache-manifest.17f948ada98d621791b9756522d32d8b.js",
     "service-worker.js": "/bhanwari-devi/service-worker.js",
     "static/css/2.5560bed7.chunk.css.map": "/bhanwari-devi/static/css/2.5560bed7.chunk.css.map",
     "static/css/main.0dfc88c3.chunk.css.map": "/bhanwari-devi/static/css/main.0dfc88c3.chunk.css.map",
-    "static/js/2.f08fd314.chunk.js.LICENSE.txt": "/bhanwari-devi/static/js/2.f08fd314.chunk.js.LICENSE.txt",
+    "static/js/2.9bcb0153.chunk.js.LICENSE.txt": "/bhanwari-devi/static/js/2.9bcb0153.chunk.js.LICENSE.txt",
     "static/media/ComputerScreen.svg": "/bhanwari-devi/static/media/ComputerScreen.ed255ec6.svg",
     "static/media/ContentTypeCompleted.svg": "/bhanwari-devi/static/media/ContentTypeCompleted.e17d7bf4.svg",
     "static/media/Ellipse.svg": "/bhanwari-devi/static/media/Ellipse.536aa026.svg",
@@ -78,8 +78,8 @@
   "entrypoints": [
     "static/js/runtime-main.b8cf87b1.js",
     "static/css/2.5560bed7.chunk.css",
-    "static/js/2.f08fd314.chunk.js",
+    "static/js/2.9bcb0153.chunk.js",
     "static/css/main.0dfc88c3.chunk.css",
-    "static/js/main.be5b166e.chunk.js"
+    "static/js/main.736f4296.chunk.js"
   ]
 }
