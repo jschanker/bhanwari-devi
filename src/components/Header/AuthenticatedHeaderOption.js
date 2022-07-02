@@ -76,7 +76,7 @@ const SwitchView = ({
       className={switchView === role && classes.bgColor}
     >
       <NavLink to={roleLandingPage} className={classes.link}>
-        <Message constantKey={MENU_ITEMS[role]} />
+        <Message constantKey={MENU_ITEMS[role]?.msgKey} />
       </NavLink>
     </MenuItem>
   ) : (
