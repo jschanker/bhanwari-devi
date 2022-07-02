@@ -26,7 +26,7 @@ function SearchCourse(props) {
   const pathway = useSelector((state) => state.Pathways);
   const dispatch = useDispatch();
   const query = new URLSearchParams(useLocation().search).get("search");
-  const [search, setSearch] = useState(query ? query : "");
+  const [search, setSearch] = useState(query || "");
   const history = useHistory();
   const classes = useStyles();
   const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
@@ -39,28 +39,27 @@ function SearchCourse(props) {
     dispatch(pathwayActions.getPathways());
   }, [dispatch]);
 
-  useEffect(() => setSearch(query || ""), [query]);
+  // useEffect(() => setSearch(query || ""), [query]);
 
   const handleSearchChange = (e) => {
-    // history.push(`?search=${e.target.value}`);
+    history.push(`?search=${e.target.value}`);
     e.preventDefault();
     setSearch(e.target.value);
   };
 
-  const pathwayCourseId =
-    (pathway.data &&
-      pathway.data.pathways
-        .map((pathway) => pathway.courses || [])
-        .flat()
-        .map((course) => course.id)) ||
+  const pathwayCourseIds =
+    (pathway.data?.pathways
+      .map((pathway) => pathway.courses || [])
+      .flat()
+      .map((course) => course.id)) ||
     [];
 
   const otherCourseResults = data?.allCourses.filter((item) => {
-    if (search && item.course_type === "json") {
-      if (pathwayCourseId && !pathwayCourseId.includes(item.id)) {
-        return item.name.toLowerCase().includes(search.toLowerCase());
-      }
-    }
+    return (
+      item.course_type === "json" &&
+      !pathwayCourseId.includes(item.id) &&
+      item.name.toLowerCase().includes(search.toLowerCase())
+    );
   });
 
   const pathwayTrackResults = pathway.data?.pathways
@@ -94,9 +93,6 @@ function SearchCourse(props) {
           fullWidth
           value={search}
           onChange={handleSearchChange}
-          onKeyDown={(e) =>
-            e.key === "Enter" && history.push(`?search=${e.target.value}`)
-          }
         />
       </Container>
       <Box className={classes.box} sx={{ mt: 5 }}>
