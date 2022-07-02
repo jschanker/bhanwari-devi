@@ -24,13 +24,34 @@ import HeaderNavLink from "./HeaderNavlink";
 import SearchBar from "../SearchBar";
 import Tooltip from "@mui/material/Tooltip";
 import Message from "../common/Message";
-import { LEARN_KEY, MENU_ITEMS } from "./constant";
+import {
+  LEARN_KEY,
+  MENU_ITEMS, 
+  ROLES,
+  ADMIN_ROLE_KEY as ADMIN,
+  PARTNER_ROLE_KEY as PARTNER,
+  STUDENT_ROLE_KEY as STUDENT,
+  VOLUNTEER_ROLE_KEY as VOLUNTEER,
+} from "./constant";
 
 const rolesLandingPages = {
+  student: PATHS.NEWUSER_DASHBOARED,
   admin: PATHS.PARTNERS,
   volunteer: PATHS.CLASS,
   partner: PATHS.PARTNERS,
 };
+
+// keys of roles which every user has
+const DEFAULT_ROLES =
+    Object.keys(ROLES).filter((role) => ROLES[role].isDefault);
+
+const savedRolesToKeysMap = Object.keys(ROLES)
+    .reduce((roleKeyMap, roleKey) => {
+      roleKeyMap[ROLES[roleKey].savedValue] = roleKey;
+      return roleKeyMap;
+    }, {});
+
+const SELECTED_ROLE_KEY = "selectedRole";
 
 const SwitchView = ({
   role,
@@ -48,13 +69,14 @@ const SwitchView = ({
     <MenuItem
       onClick={() => {
         setSwitchView(role);
+        localStorage.setItem(SELECTED_ROLE_KEY, role);
         handleCloseSwitchView();
       }}
       sx={{ margin: "0px 10px" }}
       className={switchView === role && classes.bgColor}
     >
       <NavLink to={roleLandingPage} className={classes.link}>
-        {role.charAt(0).toUpperCase() + role.slice(1)}
+        <Message constantKey={MENU_ITEMS[role]} />
       </NavLink>
     </MenuItem>
   ) : (
@@ -73,10 +95,16 @@ function AuthenticatedHeaderOption({
   const [learn, setLearn] = React.useState(null);
   const [dropDown, setDropDown] = React.useState(null);
   const [studentView, setStudentView] = React.useState(false);
-  const [switchView, setSwitchView] = React.useState("");
+  const [switchView, setSwitchView] = React.useState(
+    localStorage.getItem(SELECTED_ROLE_KEY)
+  );
   const dispatch = useDispatch();
   const user = useSelector(({ User }) => User);
-  const rolesList = user.data.user.rolesList;
+  const rolesList = (user.data.user.rolesList || [])
+      .map(savedRole => savedRolesToKeysMap[savedRole] || savedRole);
+  const rolesListWithDefaults = DEFAULT_ROLES.concat(
+      rolesList.filter(roleKey => !DEFAULT_ROLES.includes(roleKey))
+  );
   const pathway = useSelector((state) => state.Pathways);
   const classes = useStyles();
 
@@ -97,17 +125,17 @@ function AuthenticatedHeaderOption({
   const partnerGroupId = user.data.user.partner_group_id;
 
   const canSpecifyPartnerGroupId =
-    hasOneFrom(rolesList, ["admin", "partner", "partner_view"]) &&
+    hasOneFrom(rolesList, [ADMIN, PARTNER, "partner_view"]) &&
     user.data.user.partner_group_id;
 
-  const canSpecifyUserBaseRole = rolesList.indexOf("admin") > -1; //student
+  const canSpecifyUserBaseRole = rolesList.indexOf(ADMIN) > -1; //student
 
   const merakiStudents = rolesList.length < 1; //admin
 
-  const volunteer = rolesList.indexOf("volunteer") > -1;
+  const volunteer = rolesList.indexOf(VOLUNTEER) > -1;
 
   const canSpecifyPartner =
-    hasOneFrom(rolesList, ["partner", "partner_view", "partner_edit"]) &&
+    hasOneFrom(rolesList, [PARTNER, "partner_view", "partner_edit"]) &&
     partnerId != null;
 
   const handleOpenLearn = (event) => {
@@ -145,7 +173,7 @@ function AuthenticatedHeaderOption({
           },
         }}
       >
-        {(switchView === "student" || merakiStudents || studentView) && (
+        {(switchView === STUDENT || merakiStudents || studentView) && (
           <>
             <Box
               sx={{
@@ -244,7 +272,7 @@ function AuthenticatedHeaderOption({
               },
             }}
           >
-            {(switchView || rolesList[0]) === "admin" &&
+            {(switchView || rolesList[0]) === ADMIN &&
             canSpecifyUserBaseRole ? (
               <>
                 <HeaderNavLink
@@ -272,7 +300,7 @@ function AuthenticatedHeaderOption({
               </>
             ) : null}
 
-            {(switchView || rolesList[0]) === "volunteer" && volunteer ? (
+            {(switchView || rolesList[0]) === VOLUNTEER ? (
               <>
                 <HeaderNavLink
                   to={PATHS.CLASS}
@@ -282,7 +310,7 @@ function AuthenticatedHeaderOption({
               </>
             ) : null}
 
-            {(switchView || rolesList[0]) === "partner" &&
+            {(switchView || rolesList[0]) === PARTNER &&
             // "partner_view" || "partner_edit" || "partner"
             (canSpecifyPartnerGroupId || canSpecifyPartner) ? (
               <>
@@ -299,7 +327,7 @@ function AuthenticatedHeaderOption({
             ) : null}
           </Box>
         )}
-        {!(switchView === "student" || merakiStudents || studentView) &&
+        {!(switchView === STUDENT || merakiStudents || studentView) &&
           !leftDrawer && (
             <Box>
               <Link to={PATHS.SEARCHED_COURSE}>
@@ -342,22 +370,7 @@ function AuthenticatedHeaderOption({
                 open={Boolean(dropDown)}
                 onClose={handleCloseSwitchView}
               >
-                <MenuItem
-                  onClick={() => {
-                    setSwitchView("student");
-                    handleCloseSwitchView();
-                  }}
-                  sx={{ margin: "0px 10px" }}
-                  className={switchView === "student" && classes.bgColor}
-                >
-                  <NavLink
-                    to={interpolatePath(PATHS.NEWUSER_DASHBOARED)}
-                    className={classes.link}
-                  >
-                    Student
-                  </NavLink>
-                </MenuItem>
-                {rolesList.map((role) => (
+                {rolesListWithDefaults.map((role) => (
                   <SwitchView
                     role={role}
                     setSwitchView={setSwitchView}

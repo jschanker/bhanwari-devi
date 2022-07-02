@@ -5,7 +5,32 @@ export const ADMIN_ROLE_KEY = 'ADMIN';
 export const STUDENT_ROLE_KEY = 'STUDENT';
 export const VOLUNTEER_ROLE_KEY = 'VOLUNTEER';
 export const PARTNER_ROLE_KEY = 'PARTNER';
-export const ROLE_KEYS = [ADMIN_ROLE_KEY, STUDENT_ROLE_KEY, VOLUNTEER_ROLE_KEY, PARTNER_ROLE_KEY];
+// export const ROLE_KEYS =
+//    [ADMIN_ROLE_KEY, STUDENT_ROLE_KEY, VOLUNTEER_ROLE_KEY, PARTNER_ROLE_KEY];
+// export const DEFAULT_ROLE_KEYS = [STUDENT_ROLE_KEY];
+
+export const ROLES = {
+  [ADMIN_ROLE_KEY]: {
+    msgKey: ADMIN_ROLE_KEY,
+    savedValue: "admin",
+    isDefault: false,
+  },
+  [STUDENT_ROLE_KEY]: {
+    msgKey: STUDENT_ROLE_KEY,
+    savedValue: "student",
+    isDefault: true,
+  },
+  [VOLUNTEER_ROLE_KEY]: {
+    msgKey: VOLUNTEER_ROLE_KEY,
+    savedValue: "volunteer",
+    isDefault: false,
+  },
+  [PARTNER_ROLE_KEY]: {
+    msgKey: PARTNER_ROLE_KEY,
+    savedValue: "partner",
+    isDefault: false,
+  },
+};
 
 export const MENU_ITEMS = {
   [LEARN_KEY]: {
