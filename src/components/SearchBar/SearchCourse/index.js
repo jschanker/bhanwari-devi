@@ -48,7 +48,7 @@ function SearchCourse(props) {
   const pathwayCourseId =
     (pathway.data &&
       pathway.data.pathways
-        .map((pathway) => pathway.courses)
+        .map((pathway) => pathway.courses || [])
         .flat()
         .map((course) => course.id)) ||
     [];
