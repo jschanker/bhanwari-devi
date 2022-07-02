@@ -35,10 +35,10 @@ import {
 } from "./constant";
 
 const rolesLandingPages = {
-  student: PATHS.NEWUSER_DASHBOARED,
-  admin: PATHS.PARTNERS,
-  volunteer: PATHS.CLASS,
-  partner: PATHS.PARTNERS,
+  [STUDENT]: PATHS.NEWUSER_DASHBOARED,
+  [ADMIN]: PATHS.PARTNERS,
+  [VOLUNTEER]: PATHS.CLASS,
+  [PARTNER]: PATHS.PARTNERS,
 };
 
 // keys of roles which every user has
