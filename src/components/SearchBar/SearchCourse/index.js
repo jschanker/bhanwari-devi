@@ -9,6 +9,7 @@ import { breakpoints } from "../../../theme/constant";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Link } from "react-router-dom";
 import { PATHS, interpolatePath } from "../../../constant";
+import { useSearchQuery } from "../../../common/search";
 import {
   Box,
   TextField,
@@ -25,7 +26,8 @@ function SearchCourse(props) {
   const { data } = useSelector(({ Course }) => Course);
   const pathway = useSelector((state) => state.Pathways);
   const dispatch = useDispatch();
-  const query = new URLSearchParams(useLocation().search).get("search");
+  // const query = new URLSearchParams(useLocation().search).get("search");
+  const query = useSearchQuery();
   const [search, setSearch] = useState(query || "");
   const history = useHistory();
   const classes = useStyles();
