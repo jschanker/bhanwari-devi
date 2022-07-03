@@ -27,8 +27,9 @@ function SearchCourse(props) {
   const pathway = useSelector((state) => state.Pathways);
   const dispatch = useDispatch();
   // const query = new URLSearchParams(useLocation().search).get("search");
-  const query = useSearchQuery();
-  const [search, setSearch] = useState(query || "");
+  // const query = useSearchQuery();
+  const [search, setSearch] = useState("");
+  useSearchQuery(setSearch);
   const history = useHistory();
   const classes = useStyles();
   const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
