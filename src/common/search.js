@@ -1,4 +1,5 @@
 import { useQuery } from "./url";
+import { useEffect } from "react";
 
 /**
  * A custom hook that calls the provided function, if any, every time the
@@ -11,10 +12,11 @@ import { useQuery } from "./url";
 export const useSearchQuery = (cb) => {
   const query = useQuery();
   const search = query.get("search") || "";
-  if (typeof cb === 'function') {
     useEffect(() => {
-      cb(search);
+      if (typeof cb === "function") {
+        cb(search);
+      }
     }, [search]);
-  }
+
   return search;
 };
