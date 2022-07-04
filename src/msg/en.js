@@ -12,5 +12,8 @@ en.DONATE = "Donate";
 en.STUDENTS = "Students";
 en.VOLUNTEERS = "Volunteers";
 en.VOLUNTEER_WITH_US = "Volunteer with Us";
+en.MERAKI_TEAM = "Meraki Team";
+en.OPPORTUNITIES = "Opportunities";
+en.CAREERS = "Careers";
 
 export default en;

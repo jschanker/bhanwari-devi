@@ -12,5 +12,8 @@ hi.STUDENTS = "छात्र";
 hi.VOLUNTEERS = "स्वयंसेवक";
 hi.DONATE = "दान करें";
 hi.VOLUNTEER_WITH_US = "हमारे साथ स्वयंसेवक करें";
+hi.MERAKI_TEAM = "मेराकी टीम";
+hi.OPPORTUNITIES = "अवसर";
+hi.CAREERS = "करियर";
 
 export default hi;
