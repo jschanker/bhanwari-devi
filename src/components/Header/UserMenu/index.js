@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { actions as userActions } from "../../User/redux/action";
 import { PATHS } from "../../../constant";
@@ -15,14 +15,14 @@ import useStyles from "../styles";
 
 // function UserMenu({ profile }) {
 function UserMenu() {
-  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
   const classes = useStyles();
   const dispatch = useDispatch();
   const user = useSelector(({ User }) => User);
   const profilePict = user?.data?.user?.profile_picture;
 
 /*
-  useEffect(() => {
+  React.useEffect(() => {
     sendToken({ token: user.data.token }).then((res) => {
       setProfile(res.data.user.profile_picture);
     });
