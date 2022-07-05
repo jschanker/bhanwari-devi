@@ -12,6 +12,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import useStyles from "../styles";
+import Message from "../../common/Message";
 
 // function UserMenu({ profile }) {
 function UserMenu() {
@@ -63,7 +64,9 @@ function UserMenu() {
             onClick={handleCloseUserMenu}
             sx={{ width: 120, margin: "0px 10px" }}
           >
-            <Typography textAlign="center">Profile</Typography>
+            <Typography textAlign="center">
+              <Message constantKey="PROFILE" />
+            </Typography>
           </MenuItem>
         </NavLink>
         <Link
@@ -75,7 +78,7 @@ function UserMenu() {
             sx={{ width: 120, margin: "0px 10px" }}
           >
             <Typography textAlign="center" color="error">
-              Logout
+              <Message constantKey="LOGOUT" />
             </Typography>
           </MenuItem>
         </Link>

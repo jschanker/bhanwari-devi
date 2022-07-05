@@ -4,6 +4,8 @@ en.ABOUT = "About";
 en.GET_INVOLVED = "Get Involved";
 en.OUR_STORY = "Our Story";
 en.DASHBOARD = "Dashboard";
+en.SWITCH_VIEWS = "Switch to %1 View";
+en.SWITCH_TO_VIEW = "Switch to %1 View";
 en.STUDENT = "Student";
 en.VOLUNTEER = "Volunteer";
 en.ADMIN = "Admin";
@@ -15,5 +17,6 @@ en.VOLUNTEER_WITH_US = "Volunteer with Us";
 en.MERAKI_TEAM = "Meraki Team";
 en.OPPORTUNITIES = "Opportunities";
 en.CAREERS = "Careers";
+en.LOGOUT = "Logout";
 
 export default en;

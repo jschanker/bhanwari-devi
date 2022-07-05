@@ -1,4 +1,14 @@
-/*
+import React from "react";
+import { useSelector } from "react-redux";
+import useStyles from "./styles";
+import {
+  Box,
+  Typography,
+  Menu,
+  MenuItem,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import Message from "../../common/Message";
 import {
   LEARN_KEY,
@@ -19,32 +29,51 @@ const rolesLandingPages = {
   [PARTNER]: PATHS.PARTNERS,
 };
 
+// keys of roles which every user has
+const DEFAULT_ROLES =
+    Object.keys(ROLES).filter((role) => ROLES[role].isDefault);
+
+const savedRolesToKeysMap = Object.keys(ROLES)
+    .reduce((roleKeyMap, roleKey) => {
+      roleKeyMap[ROLES[roleKey].savedValue] = roleKey;
+      return roleKeyMap;
+    }, {});
+
 const SELECTED_ROLE_KEY = "selectedRole";
 
-function ChangeRoleRow({
+function ChangeRole({
+  isToggle,
   role,
   setSwitchView,
   handleCloseSwitchView,
-  switchView,
+  roleView,
   partner,
 }) {
+
   const classes = useStyles();
+  const styles = isToggle ? {} : { margin: "0px 10px" };
+  const roleMsgKey = MENU_ITEMS[role]?.msgKey;
 
   rolesLandingPages.partner = partner;
   const roleLandingPage = rolesLandingPages[role];
-
+  // classes.bgColor doesn't do anything because it's overriden by the
+  //     transparency of the list item
   return roleLandingPage ? (
     <MenuItem
       onClick={() => {
         setSwitchView(role);
         localStorage.setItem(SELECTED_ROLE_KEY, role);
-        handleCloseSwitchView();
+        !isToggle && handleCloseSwitchView();
       }}
-      sx={{ margin: "0px 10px" }}
-      className={switchView === role && classes.bgColor}
+      sx={styles}
+      className={roleView === role && classes.bgColor}
     >
       <NavLink to={roleLandingPage} className={classes.link}>
-        <Message constantKey={MENU_ITEMS[role]?.msgKey} />
+        {
+          isToggle ? 
+           <Message constantKey="SWITCH_TO_VIEW" args={[roleMsgKey]} />
+           : <Message constantKey={roleMsgKey} />  
+        }
       </NavLink>
     </MenuItem>
   ) : (
@@ -52,7 +81,36 @@ function ChangeRoleRow({
   );
 }
 
-function ChangeRolesView() {
+function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
+  /*
+  const [roleView, setRoleView] = React.useState(
+    localStorage.getItem(SELECTED_ROLE_KEY)
+  );
+  */
+  const [dropDown, setDropDown] = React.useState(null);
+  const user = useSelector(({ User }) => User);
+  const rolesList = (user.data.user.rolesList || [])
+      .map(savedRole => savedRolesToKeysMap[savedRole] || savedRole);
+  const rolesListWithDefaults = DEFAULT_ROLES.concat(
+      rolesList.filter(roleKey => !DEFAULT_ROLES.includes(roleKey))
+  );
+  const commonProps = {
+    role,
+    setRoleView,
+    roleView,
+    partner: canSpecifyPartnerGroupId
+      ? `${PATHS.STATE}/${partnerGroupId}`
+      : `${PATHS.PARTNERS}/${partnerId}`
+  };
+
+  const handleOpenSwitchView = (event, menu) => {
+    setDropDown(event.currentTarget);
+  };
+
+  const handleCloseSwitchView = () => {
+    setDropDown(null);
+  };
+
   return (
     <Box
       sx={{
@@ -63,7 +121,7 @@ function ChangeRolesView() {
         },
       }}
     >
-      {rolesList.length > 1 ? (
+      {rolesListWithDefaults.length > 2 ? (
         <>
           <MenuItem onClick={handleOpenSwitchView}>
             <Typography variant="subtitle1">Switch Views</Typography>
@@ -86,48 +144,20 @@ function ChangeRolesView() {
             onClose={handleCloseSwitchView}
           >
             {rolesListWithDefaults.map((role) => (
-              <SwitchView
-                role={role}
-                setSwitchView={setSwitchView}
+              <ChangeRole
                 handleCloseSwitchView={handleCloseSwitchView}
-                switchView={switchView}
-                partner={
-                  canSpecifyPartnerGroupId
-                    ? `${PATHS.STATE}/${partnerGroupId}`
-                    : `${PATHS.PARTNERS}/${partnerId}`
-                }
+                {...commonProps}
               />
             ))}
           </Menu>
         </>
       ) : (
-        rolesList.length !== 0 && (
-          <MenuItem
-            onClick={() => {
-              setStudentView(!studentView);
-            }}
-          >
-            <NavLink
-              to={
-                studentView === false
-                  ? interpolatePath(PATHS.PATHWAY_COURSE, {
-                      pathwayId: pythonPathwayId, // want to use dashboard?
-                    })
-                  : rolesLandingPages[rolesList[0]]
-              }
-              className={classes.link}
-            >
-              {studentView
-                ? `Switch to ${rolesList[0]} View`
-                : 'Switch to student View'}
-            </NavLink>
-          </MenuItem>
+        rolesListWithDefaults.length === 2 && (
+          <ChangeRole isToggle={true} {...commonProps} />
         )
       )}
     </Box>
   );
 }
 
-
 export default ChangeRolesView;
-*/
