@@ -159,7 +159,7 @@ function AuthenticatedHeaderOption({
           !(roleView === STUDENT || merakiStudents || studentView) &&
           !leftDrawer && (
             <SearchHeader />
-          );
+          )
         }
         <ChangeRolesView {...{roleView, setRoleView, leftDrawer}} />
       </Box>
