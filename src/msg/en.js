@@ -17,6 +17,7 @@ en.DONATE = "Donate";
 en.VOLUNTEER_WITH_US = "Volunteer with Us";
 en.MERAKI_TEAM = "Meraki Team";
 en.OPPORTUNITIES = "Opportunities";
+en.CLASSES = "कक्षाएं";
 en.CAREERS = "Careers";
 en.PROFILE = "Profile";
 en.LOGOUT = "Logout";

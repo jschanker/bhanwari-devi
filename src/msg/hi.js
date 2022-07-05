@@ -17,6 +17,7 @@ hi.DONATE = "दान करें";
 hi.VOLUNTEER_WITH_US = "हमारे साथ स्वयंसेवक करें";
 hi.MERAKI_TEAM = "मेराकी टीम";
 hi.OPPORTUNITIES = "अवसर";
+hi.CLASSES = "कक्षाएं";
 hi.CAREERS = "करियर";
 hi.PROFILE = "प्रोफ़ाइल";
 hi.LOGOUT = "लॉगआउट";

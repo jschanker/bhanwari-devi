@@ -36,6 +36,7 @@ import {
 } from "./constant";
 import StudentHeader from "./StudentHeader";
 import AdminHeader from "./AdminHeader";
+import VolunteerHeader from "./VolunteerHeader";
 
 const rolesLandingPages = {
   [STUDENT]: PATHS.NEWUSER_DASHBOARED,
@@ -186,22 +187,15 @@ function AuthenticatedHeaderOption({
               },
             }}
           >
-            {(switchView || rolesList[0]) === ADMIN &&
-            (
+            {(switchView || rolesList[0]) === ADMIN && (
               <AdminHeader
-                {...toggleDrawer, canSpecifyPartnerGroupId, partnerGroupId}
+                {...{toggleDrawer, canSpecifyPartnerGroupId, partnerGroupId}}
               />
             )}
 
-            {(switchView || rolesList[0]) === VOLUNTEER ? (
-              <>
-                <HeaderNavLink
-                  to={PATHS.CLASS}
-                  text="Classes"
-                  toggleDrawer={toggleDrawer}
-                />
-              </>
-            ) : null}
+            {(switchView || rolesList[0]) === VOLUNTEER && (
+              <VolunteerHeader toggleDrawer={toggleDrawer} />
+            )}
 
             {(switchView || rolesList[0]) === PARTNER &&
             // "partner_view" || "partner_edit" || "partner"
