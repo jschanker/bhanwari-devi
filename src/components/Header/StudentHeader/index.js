@@ -11,8 +11,7 @@ import {
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import HeaderNavLink from "../HeaderNavlink";
-import SearchIcon from "@mui/icons-material/Search";
-import Tooltip from "@mui/material/Tooltip";
+import SearchHeader from "../SearchHeader";
 import Message from "../../common/Message";
 import { PATHS } from "../../../constant";
 import {
@@ -102,15 +101,7 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
           pr: onlyRole && 2,
         }}
       >
-        {!leftDrawer && (
-          <Link to={PATHS.SEARCHED_COURSE}>
-            <Tooltip title="Search the course...">
-              <Button color="dark">
-                <SearchIcon />
-              </Button>
-            </Tooltip>
-          </Link>
-        )}
+        {!leftDrawer && <SearchHeader />}
 
         <HeaderNavLink
           to={PATHS.ADMISSION}
