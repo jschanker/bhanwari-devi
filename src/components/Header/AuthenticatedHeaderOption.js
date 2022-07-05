@@ -34,7 +34,8 @@ import {
   STUDENT_ROLE_KEY as STUDENT,
   VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "./constant";
-import StudentHeader from "./StudentHeader"
+import StudentHeader from "./StudentHeader";
+import AdminHeader from "./AdminHeader";
 
 const rolesLandingPages = {
   [STUDENT]: PATHS.NEWUSER_DASHBOARED,
@@ -186,32 +187,11 @@ function AuthenticatedHeaderOption({
             }}
           >
             {(switchView || rolesList[0]) === ADMIN &&
-            canSpecifyUserBaseRole ? (
-              <>
-                <HeaderNavLink
-                  to={PATHS.USER}
-                  text={<Message constantKey="STUDENTS" />}
-                  toggleDrawer={toggleDrawer}
-                />
-                <HeaderNavLink
-                  to={PATHS.VOLUNTEER}
-                  text={<Message constantKey="VOLUNTEERS" />}
-                  toggleDrawer={toggleDrawer}
-                />
-                <HeaderNavLink
-                  to={PATHS.PARTNERS}
-                  text="Partners"
-                  toggleDrawer={toggleDrawer}
-                />
-                {canSpecifyPartnerGroupId && (
-                  <HeaderNavLink
-                    to={`${PATHS.STATE}/${partnerGroupId}`}
-                    text={<Message constantKey="DASHBOARD" />}
-                    toggleDrawer={toggleDrawer}
-                  />
-                )}
-              </>
-            ) : null}
+            (
+              <AdminHeader
+                {...toggleDrawer, canSpecifyPartnerGroupId, partnerGroupId}
+              />
+            )}
 
             {(switchView || rolesList[0]) === VOLUNTEER ? (
               <>

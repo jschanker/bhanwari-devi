@@ -10,13 +10,15 @@ en.STUDENT = "Student";
 en.VOLUNTEER = "Volunteer";
 en.ADMIN = "Admin";
 en.PARTNER = "Partner";
-en.DONATE = "Donate";
 en.STUDENTS = "Students";
 en.VOLUNTEERS = "Volunteers";
+en.PARTNERS = "Partners";
+en.DONATE = "Donate";
 en.VOLUNTEER_WITH_US = "Volunteer with Us";
 en.MERAKI_TEAM = "Meraki Team";
 en.OPPORTUNITIES = "Opportunities";
 en.CAREERS = "Careers";
+en.PROFILE = "Profile";
 en.LOGOUT = "Logout";
 
 export default en;
