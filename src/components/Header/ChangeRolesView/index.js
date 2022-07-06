@@ -1,5 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
+import { PATHS } from "../../../constant";
 import useStyles from "../styles";
 import {
   Box,
@@ -94,11 +96,17 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
   const rolesListWithDefaults = DEFAULT_ROLES.concat(
       rolesList.filter(roleKey => !DEFAULT_ROLES.includes(roleKey))
   );
+  const otherRole = 
+      rolesListWithDefaults[(rolesListWithDefaults.indexOf(roleView) + 1) % 2];
+
+  const user = useSelector(({ User }) => User);
+  const partnerGroupId = user.data.user.partner_group_id;
+  const partnerId = user.data.user.partner_id;
+
   const commonProps = {
-    role,
     setRoleView,
     roleView,
-    partner: canSpecifyPartnerGroupId
+    partner: partnerGroupId
       ? `${PATHS.STATE}/${partnerGroupId}`
       : `${PATHS.PARTNERS}/${partnerId}`
   };
@@ -146,6 +154,7 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
             {rolesListWithDefaults.map((role) => (
               <ChangeRole
                 handleCloseSwitchView={handleCloseSwitchView}
+                role={role}
                 {...commonProps}
               />
             ))}
@@ -153,7 +162,7 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
         </>
       ) : (
         rolesListWithDefaults.length === 2 && (
-          <ChangeRole isToggle={true} {...commonProps} />
+          <ChangeRole isToggle={true} role={otherRole} {...commonProps} />
         )
       )}
     </Box>
