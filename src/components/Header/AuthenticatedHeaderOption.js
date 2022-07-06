@@ -37,6 +37,7 @@ import {
 import StudentHeader from "./StudentHeader";
 import AdminHeader from "./AdminHeader";
 import VolunteerHeader from "./VolunteerHeader";
+import PartnerHeader from "./PartnerHeader";
 import SearchHeader from "./SearchHeader";
 import ChangeRolesView from "./ChangeRolesView";
 
@@ -53,11 +54,6 @@ function AuthenticatedHeaderOption({
   leftDrawer,
   handleSearchChange,
 }) {
-  const [partnerId, setPartnerId] = useState("");
-  // const [profile, setProfile] = useState("");
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [learn, setLearn] = React.useState(null);
-  const [dropDown, setDropDown] = React.useState(null);
   const [studentView, setStudentView] = React.useState(false);
   const [roleView, setRoleView] = React.useState(
     localStorage.getItem(SELECTED_ROLE_KEY)
@@ -67,37 +63,24 @@ function AuthenticatedHeaderOption({
   const rolesList = (user.data.user.rolesList || [])
       .map(savedRole => savedRolesToKeysMap[savedRole] || savedRole);
   const pathway = useSelector((state) => state.Pathways);
-  const classes = useStyles();
 
+/*
   useEffect(() => {
     sendToken({ token: user.data.token }).then((res) => {
-      setPartnerId(res.data.user.partner_id);
+      // setPartnerId(res.data.user.partner_id);
       // setProfile(res.data.user.profile_picture);
     });
   }, []);
+*/
 
   useEffect(() => {
     dispatch(pathwayActions.getPathways());
   }, [dispatch]);
 
-  const pythonPathwayId =
-      pathway.data?.pathways.find((pathway) => pathway.code === "PRGPYT")?.id;
-
-  const partnerGroupId = user.data.user.partner_group_id;
-
-  const canSpecifyPartnerGroupId =
-    hasOneFrom(rolesList, [ADMIN, PARTNER, PARTNER_VIEW]) &&
-    user.data.user.partner_group_id;
-
-  const canSpecifyUserBaseRole = rolesList.indexOf(ADMIN) > -1; //student
+  // const pythonPathwayId =
+  //    pathway.data?.pathways.find((pathway) => pathway.code === "PRGPYT")?.id;
 
   const merakiStudents = rolesList.length < 1; //admin
-
-  const volunteer = rolesList.indexOf(VOLUNTEER) > -1;
-
-  const canSpecifyPartner =
-    hasOneFrom(rolesList, [PARTNER, PARTNER_VIEW, PARTNER_EDIT]) &&
-    partnerId != null;
 
   return (
     <>
@@ -129,30 +112,16 @@ function AuthenticatedHeaderOption({
             }}
           >
             {(roleView || rolesList[0]) === ADMIN && (
-              <AdminHeader
-                {...{toggleDrawer, canSpecifyPartnerGroupId, partnerGroupId}}
-              />
+              <AdminHeader toggleDrawer={toggleDrawer} />
             )}
 
             {(roleView || rolesList[0]) === VOLUNTEER && (
               <VolunteerHeader toggleDrawer={toggleDrawer} />
             )}
 
-            {(roleView || rolesList[0]) === PARTNER &&
-            // "partner_view" || "partner_edit" || "partner"
-            (canSpecifyPartnerGroupId || canSpecifyPartner) ? (
-              <>
-                <HeaderNavLink
-                  to={
-                    canSpecifyPartnerGroupId
-                      ? `${PATHS.STATE}/${partnerGroupId}`
-                      : `${PATHS.PARTNERS}/${partnerId}`
-                  }
-                  text={<Message constantKey="DASHBOARD" />}
-                  toggleDrawer={toggleDrawer}
-                />
-              </>
-            ) : null}
+            {(roleView || rolesList[0]) === PARTNER && (
+              <PartnerHeader toggleDrawer={toggleDrawer} />
+            )}
           </Box>
         )}
         {

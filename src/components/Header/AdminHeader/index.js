@@ -3,7 +3,10 @@ import HeaderNavLink from "../HeaderNavlink";
 import Message from "../../common/Message";
 import { PATHS } from "../../../constant";
 
-function AdminHeader({ toggleDrawer, canSpecifyPartnerGroupId, partnerGroupId }) {
+function AdminHeader({ toggleDrawer }) {
+  const user = useSelector(({ User }) => User);
+  const partnerGroupId = user.data.user.partner_group_id;
+
   return (
     <>
       <HeaderNavLink
@@ -21,7 +24,7 @@ function AdminHeader({ toggleDrawer, canSpecifyPartnerGroupId, partnerGroupId })
         text={<Message constantKey="PARTNERS" />}
         toggleDrawer={toggleDrawer}
       />
-      {canSpecifyPartnerGroupId && (
+      {partnerGroupId && (
         <HeaderNavLink
           to={`${PATHS.STATE}/${partnerGroupId}`}
           text={<Message constantKey="DASHBOARD" />}
