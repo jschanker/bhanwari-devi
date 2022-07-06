@@ -23,3 +23,5 @@ function PartnerHeader({ toggleDrawer }) {
     </>
   );
 }
+
+export default PartnerHeader;
