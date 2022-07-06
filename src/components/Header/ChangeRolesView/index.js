@@ -46,7 +46,7 @@ const SELECTED_ROLE_KEY = "selectedRole";
 function ChangeRole({
   isToggle,
   role,
-  setSwitchView,
+  setRoleView,
   handleCloseSwitchView,
   roleView,
   partner,
@@ -63,7 +63,7 @@ function ChangeRole({
   return roleLandingPage ? (
     <MenuItem
       onClick={() => {
-        setSwitchView(role);
+        setRoleView(role);
         localStorage.setItem(SELECTED_ROLE_KEY, role);
         !isToggle && handleCloseSwitchView();
       }}
