@@ -23,10 +23,10 @@ import {
   STUDENT_ROLE_KEY as STUDENT,
   VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "../constant";
-import StudentHeader from "./StudentHeader";
-import AdminHeader from "./AdminHeader";
-import VolunteerHeader from "./VolunteerHeader";
-import PartnerHeader from "./PartnerHeader";
+import StudentHeader from "../StudentHeader";
+import AdminHeader from "../AdminHeader";
+import VolunteerHeader from "../VolunteerHeader";
+import PartnerHeader from "../PartnerHeader";
 
 const rolesLandingPages = {
   [STUDENT]: PATHS.NEWUSER_DASHBOARED,
