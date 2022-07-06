@@ -99,7 +99,6 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
   const otherRole = 
       rolesListWithDefaults[(rolesListWithDefaults.indexOf(roleView) + 1) % 2];
 
-  const user = useSelector(({ User }) => User);
   const partnerGroupId = user.data.user.partner_group_id;
   const partnerId = user.data.user.partner_id;
 
