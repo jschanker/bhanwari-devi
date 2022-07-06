@@ -26,6 +26,23 @@ import {
   // VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "../constant";
 
+function CommonLeftStudentHeader({ toggleDrawer }) {
+  return (
+    <>
+      <HeaderNavLink
+        to={PATHS.NEWUSER_DASHBOARED}
+        text={<Message constantKey="DASHBOARD" />}
+        toggleDrawer={toggleDrawer}
+      />
+      <HeaderNavLink
+        to={PATHS.MENTOR}
+        text={<Message constantKey="MENTOR" />}
+        toggleDrawer={toggleDrawer}
+      />
+    </>
+  );
+}
+
 function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
   const [learn, setLearn] = React.useState(null);
   const handleOpenLearn = (event) => {
@@ -60,16 +77,7 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
           toggleDrawer={toggleDrawer}
         />
 
-        <HeaderNavLink
-          to={PATHS.NEWUSER_DASHBOARED}
-          text={<Message constantKey="DASHBOARD" />}
-          toggleDrawer={toggleDrawer}
-        />
-        <HeaderNavLink
-          to={PATHS.MENTOR}
-          text="Mentor"
-          toggleDrawer={toggleDrawer}
-        />
+        <CommonLeftStudentHeader toggleDrawer={toggleDrawer} />
       </Box>
       <Box
         sx={{
@@ -81,16 +89,7 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
           handleClose={handleCloseLearn}
           toggleDrawer={toggleDrawer}
         />
-        <HeaderNavLink
-          to={PATHS.NEWUSER_DASHBOARED}
-          text={<Message constantKey="DASHBOARD" />}
-          toggleDrawer={toggleDrawer}
-        />
-        <HeaderNavLink
-          to={PATHS.MENTOR}
-          text="Mentor"
-          toggleDrawer={toggleDrawer}
-        />
+        <CommonLeftStudentHeader toggleDrawer={toggleDrawer} />
       </Box>
 
       <Box
@@ -105,7 +104,7 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
 
         <HeaderNavLink
           to={PATHS.ADMISSION}
-          text="Navgurukul Admission"
+          text={<Message constantKey="NAVGURUKUL_ADMISSION" />}
           toggleDrawer={toggleDrawer}
         />
         <HeaderNavLink

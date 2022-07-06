@@ -54,15 +54,9 @@ function AuthenticatedHeaderOption({
   leftDrawer,
   handleSearchChange,
 }) {
-  const [studentView, setStudentView] = React.useState(false);
-  const [roleView, setRoleView] = React.useState(
-    localStorage.getItem(SELECTED_ROLE_KEY)
-  );
-  const dispatch = useDispatch();
-  const user = useSelector(({ User }) => User);
-  const rolesList = (user.data.user.rolesList || [])
-      .map(savedRole => savedRolesToKeysMap[savedRole] || savedRole);
-  const pathway = useSelector((state) => state.Pathways);
+  const [RoleSpecificHeader, setRoleSpecificHeader] = React.useState(null);
+  // const dispatch = useDispatch();
+  // const pathway = useSelector((state) => state.Pathways);
 
 /*
   useEffect(() => {
@@ -73,14 +67,14 @@ function AuthenticatedHeaderOption({
   }, []);
 */
 
-  useEffect(() => {
-    dispatch(pathwayActions.getPathways());
-  }, [dispatch]);
+  // useEffect(() => {
+  //  dispatch(pathwayActions.getPathways());
+  //}, [dispatch]);
 
   // const pythonPathwayId =
   //    pathway.data?.pathways.find((pathway) => pathway.code === "PRGPYT")?.id;
 
-  const merakiStudents = rolesList.length < 1; //admin
+  // const merakiStudents = rolesList.length < 1; //admin
 
   return (
     <>
@@ -93,46 +87,11 @@ function AuthenticatedHeaderOption({
           },
         }}
       >
-        {(roleView === STUDENT || merakiStudents || studentView) && (
-          <StudentHeader 
-            leftDrawer={leftDrawer}
-            toggleDrawer={toggleDrawer}
-            onlyRole={merakiStudents}
-          />
-        )}
-
-        {!studentView && (
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: {
-                xs: "block",
-                md: "flex",
-              },
-            }}
-          >
-            {(roleView || rolesList[0]) === ADMIN && (
-              <AdminHeader toggleDrawer={toggleDrawer} />
-            )}
-
-            {(roleView || rolesList[0]) === VOLUNTEER && (
-              <VolunteerHeader toggleDrawer={toggleDrawer} />
-            )}
-
-            {(roleView || rolesList[0]) === PARTNER && (
-              <PartnerHeader toggleDrawer={toggleDrawer} />
-            )}
-          </Box>
-        )}
-        {
-          !(roleView === STUDENT || merakiStudents || studentView) &&
-          !leftDrawer && (
-            <SearchHeader />
-          )
-        }
-        <ChangeRolesView {...{roleView, setRoleView, leftDrawer}} />
+        {RoleSpecificHeader}
+        <ChangeRolesView 
+          {...{setRoleSpecificHeader, leftDrawer, toggleDrawer}}
+        />
       </Box>
-
       {!leftDrawer && <UserMenu />}
     </>
   );

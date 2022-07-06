@@ -23,6 +23,10 @@ import {
   STUDENT_ROLE_KEY as STUDENT,
   VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "../constant";
+import StudentHeader from "./StudentHeader";
+import AdminHeader from "./AdminHeader";
+import VolunteerHeader from "./VolunteerHeader";
+import PartnerHeader from "./PartnerHeader";
 
 const rolesLandingPages = {
   [STUDENT]: PATHS.NEWUSER_DASHBOARED,
@@ -54,7 +58,7 @@ function ChangeRole({
 
   const classes = useStyles();
   const styles = isToggle ? {} : { margin: "0px 10px" };
-  const roleMsgKey = MENU_ITEMS[role]?.msgKey;
+  const roleStr = <Message constantKey = {MENU_ITEMS[role]?.msgKey} />;
 
   rolesLandingPages.partner = partner;
   const roleLandingPage = rolesLandingPages[role];
@@ -73,8 +77,8 @@ function ChangeRole({
       <NavLink to={roleLandingPage} className={classes.link}>
         {
           isToggle ? 
-           <Message constantKey="SWITCH_TO_VIEW" args={[roleMsgKey]} />
-           : <Message constantKey={roleMsgKey} />  
+           <Message constantKey="SWITCH_TO_VIEW" args={roleStr} />
+           : roleStr  
         }
       </NavLink>
     </MenuItem>
@@ -83,12 +87,10 @@ function ChangeRole({
   );
 }
 
-function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
-  /*
+function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
   const [roleView, setRoleView] = React.useState(
     localStorage.getItem(SELECTED_ROLE_KEY)
   );
-  */
   const [dropDown, setDropDown] = React.useState(null);
   const user = useSelector(({ User }) => User);
   const rolesList = (user.data.user.rolesList || [])
@@ -110,6 +112,20 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
       : `${PATHS.PARTNERS}/${partnerId}`
   };
 
+  const drawerProps = {leftDrawer, toggleDrawer};
+
+  const roleSpecificComponentMap = {
+    [STUDENT]: (
+      <StudentHeader
+        {{...drawerProps}}
+        onlyRole={rolesListWithDefaults.length === 1}
+      />
+    ),
+    [ADMIN]: <AdminHeader {{...drawerProps}} />,
+    [VOLUNTEER]: <VolunteerHeader {{...drawerProps}} />,
+    [PARTNER]: <PartnerHeader {{...drawerProps}} />,
+  };
+
   const handleOpenSwitchView = (event, menu) => {
     setDropDown(event.currentTarget);
   };
@@ -117,6 +133,12 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
   const handleCloseSwitchView = () => {
     setDropDown(null);
   };
+
+  React.useEffect(() => {
+    setRoleSpecificHeader(
+      roleSpecificComponentMap[roleView || rolesList[0] || DEFAULT_ROLES[0]]
+    );
+  }, [roleView]);
 
   return (
     <Box
@@ -131,7 +153,9 @@ function ChangeRolesView({ roleView, setRoleView, leftDrawer }) {
       {rolesListWithDefaults.length > 2 ? (
         <>
           <MenuItem onClick={handleOpenSwitchView}>
-            <Typography variant="subtitle1">Switch Views</Typography>
+            <Typography variant="subtitle1">
+              <Message constantKey={SWITCH_VIEWS} />
+            </Typography>
             {dropDown ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </MenuItem>
           <Menu
