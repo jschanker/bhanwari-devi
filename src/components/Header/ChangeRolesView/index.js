@@ -154,7 +154,7 @@ function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
         <>
           <MenuItem onClick={handleOpenSwitchView}>
             <Typography variant="subtitle1">
-              <Message constantKey={SWITCH_VIEWS} />
+              <Message constantKey="SWITCH_VIEWS" />
             </Typography>
             {dropDown ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           </MenuItem>
