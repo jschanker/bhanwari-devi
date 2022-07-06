@@ -117,13 +117,13 @@ function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
   const roleSpecificComponentMap = {
     [STUDENT]: (
       <StudentHeader
-        {{...drawerProps}}
+        {...drawerProps}
         onlyRole={rolesListWithDefaults.length === 1}
       />
     ),
-    [ADMIN]: <AdminHeader {{...drawerProps}} />,
-    [VOLUNTEER]: <VolunteerHeader {{...drawerProps}} />,
-    [PARTNER]: <PartnerHeader {{...drawerProps}} />,
+    [ADMIN]: <AdminHeader {...drawerProps} />,
+    [VOLUNTEER]: <VolunteerHeader {...drawerProps} />,
+    [PARTNER]: <PartnerHeader {...drawerProps} />,
   };
 
   const handleOpenSwitchView = (event, menu) => {
