@@ -29,7 +29,7 @@ export const selectRolesData = ({ User }) => {
         key: roleKey,
         msgKey: ROLES[roleKey].msgKey,
         assignedRole: true,
-        properties: : ROLES[roleKey].properties,
+        properties: ROLES[roleKey].properties,
       }))
     );
 };
