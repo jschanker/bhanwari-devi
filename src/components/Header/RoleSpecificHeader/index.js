@@ -16,3 +16,5 @@ function RoleSpecificHeader({ role, isUniqueRole, leftDrawer, toggleDrawer }) {
 
   return roleSpecificComponentMap[role];
 }
+
+export default RoleSpecificHeader;
