@@ -120,7 +120,7 @@ function AuthenticatedHeaderOption({
           {...{role, isUniqueRole, leftDrawer, toggleDrawer}} 
         />
         <ChangeRolesView 
-          {...{setRole, roles, leftDrawer}}
+          {...{setRole, roles: rolesWithLandingPages, leftDrawer}}
         />
       </Box>
       {!leftDrawer && <UserMenu />}

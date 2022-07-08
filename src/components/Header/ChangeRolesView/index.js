@@ -55,7 +55,7 @@ function ChangeRole({
         !isToggle && handleCloseSwitchView();
       }}
       sx={styles}
-      className={roleView === role && classes.bgColor}
+      className={roleView === role.key && classes.bgColor}
     >
       <NavLink to={roleLandingPage} className={classes.link}>
         {
@@ -78,7 +78,7 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
   );
   const [dropDown, setDropDown] = React.useState(null);
   const otherRole = 
-      roles[(roles.indexOf(roleView) + 1) % 2];
+      roles[(roles.find(role => role.key === roleView) + 1) % 2];
 
   const commonProps = { setRoleView, roleView };
 
