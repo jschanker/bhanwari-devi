@@ -38,8 +38,10 @@ import StudentHeader from "./StudentHeader";
 import AdminHeader from "./AdminHeader";
 import VolunteerHeader from "./VolunteerHeader";
 import PartnerHeader from "./PartnerHeader";
+import RoleSpecificHeader from "./RoleSpecificHeader";
 import SearchHeader from "./SearchHeader";
 import ChangeRolesView from "./ChangeRolesView";
+import { selectRolesData } from "../User/redux/selectors";
 
 const savedRolesToKeysMap = Object.keys(ROLES)
     .reduce((roleKeyMap, roleKey) => {
@@ -49,14 +51,41 @@ const savedRolesToKeysMap = Object.keys(ROLES)
 
 const SELECTED_ROLE_KEY = "selectedRole";
 
+const rolesLandingPages = {
+  [STUDENT]: PATHS.NEWUSER_DASHBOARED,
+  [ADMIN]: PATHS.PARTNERS,
+  [VOLUNTEER]: PATHS.CLASS,
+  [PARTNER]: PATHS.PARTNERS,
+};
+
 function AuthenticatedHeaderOption({
   toggleDrawer,
   leftDrawer,
   handleSearchChange,
 }) {
-  const [RoleSpecificHeader, setRoleSpecificHeader] = React.useState(null);
+  //const [RoleSpecificHeader, setRoleSpecificHeader] = React.useState(null);
+  const roles = useSelector(selectRolesData);
+
+  const rolesWithLandingPages = roles.map((role) => ({
+    ...role, landingPage: roleLandingPages[role.key]
+  }));
+
+  const [role, setRole] = React.useState(null);
+  // const user = useSelector(({ User }) => User);
+  const isUniqueRole = roles.length === 1;
   // const dispatch = useDispatch();
   // const pathway = useSelector((state) => state.Pathways);
+
+  // special case for partner landing page
+  if (roles[PARTNER]) { 
+    if (roles.properties.partnerGroupId) {
+      roles[PARTNER].landingPage = 
+        `${PATHS.STATE}/${roles.properties.partnerGroupId}`;
+    } else if(roles.properties.partnerId) {
+      roles[PARTNER].landingPage = 
+        `${PATHS.PARTNERS}/${roles.properties.partnerId}`;
+    }
+  }
 
 /*
   useEffect(() => {
@@ -87,9 +116,11 @@ function AuthenticatedHeaderOption({
           },
         }}
       >
-        {RoleSpecificHeader}
+        <RoleSpecificHeader 
+          {...{role, isUniqueRole, leftDrawer, toggleDrawer}} 
+        />
         <ChangeRolesView 
-          {...{setRoleSpecificHeader, leftDrawer, toggleDrawer}}
+          {...{setRole, roles, leftDrawer}}
         />
       </Box>
       {!leftDrawer && <UserMenu />}

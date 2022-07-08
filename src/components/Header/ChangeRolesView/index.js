@@ -13,7 +13,6 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import Message from "../../common/Message";
 import {
-  LEARN_KEY,
   MENU_ITEMS, 
   ROLES,
   ADMIN_ROLE_KEY as ADMIN,
@@ -23,10 +22,6 @@ import {
   STUDENT_ROLE_KEY as STUDENT,
   VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "../constant";
-import StudentHeader from "../StudentHeader";
-import AdminHeader from "../AdminHeader";
-import VolunteerHeader from "../VolunteerHeader";
-import PartnerHeader from "../PartnerHeader";
 
 const rolesLandingPages = {
   [STUDENT]: PATHS.NEWUSER_DASHBOARED,
@@ -35,16 +30,6 @@ const rolesLandingPages = {
   [PARTNER]: PATHS.PARTNERS,
 };
 
-// keys of roles which every user has
-const DEFAULT_ROLES =
-    Object.keys(ROLES).filter((role) => ROLES[role].isDefault);
-
-const savedRolesToKeysMap = Object.keys(ROLES)
-    .reduce((roleKeyMap, roleKey) => {
-      roleKeyMap[ROLES[roleKey].savedValue] = roleKey;
-      return roleKeyMap;
-    }, {});
-
 const SELECTED_ROLE_KEY = "selectedRole";
 
 function ChangeRole({
@@ -52,23 +37,21 @@ function ChangeRole({
   role,
   setRoleView,
   handleCloseSwitchView,
-  roleView,
-  partner,
+  roleView
 }) {
 
   const classes = useStyles();
-  const styles = isToggle ? {} : { margin: "0px 10px" };
-  const roleStr = <Message constantKey = {MENU_ITEMS[role]?.msgKey} />;
+  const styles = isToggle ? {} : { margin: "0 10px" };
+  const roleStr = <Message constantKey={role.msgKey} />;
 
-  rolesLandingPages.partner = partner;
-  const roleLandingPage = rolesLandingPages[role];
+  const roleLandingPage = role.landingPage;
   // classes.bgColor doesn't do anything because it's overriden by the
   //     transparency of the list item
   return roleLandingPage ? (
     <MenuItem
       onClick={() => {
-        setRoleView(role);
-        localStorage.setItem(SELECTED_ROLE_KEY, role);
+        setRoleView(role.key);
+        localStorage.setItem(SELECTED_ROLE_KEY, role.key);
         !isToggle && handleCloseSwitchView();
       }}
       sx={styles}
@@ -77,7 +60,7 @@ function ChangeRole({
       <NavLink to={roleLandingPage} className={classes.link}>
         {
           isToggle ? 
-           <Message constantKey="SWITCH_TO_VIEW" args={roleStr} />
+           <Message constantKey="SWITCH_TO_VIEW" args={[roleStr]} />
            : roleStr  
         }
       </NavLink>
@@ -87,44 +70,17 @@ function ChangeRole({
   );
 }
 
-function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
+function ChangeRolesView({ setRole, rolesList, leftDrawer }) {
+  const defaultRole = rolesList.find(role => role.assignedRole) ||
+      rolesList[0];
   const [roleView, setRoleView] = React.useState(
-    localStorage.getItem(SELECTED_ROLE_KEY)
+    localStorage.getItem(SELECTED_ROLE_KEY) || defaultRole
   );
   const [dropDown, setDropDown] = React.useState(null);
-  const user = useSelector(({ User }) => User);
-  const rolesList = (user.data.user.rolesList || [])
-      .map(savedRole => savedRolesToKeysMap[savedRole] || savedRole);
-  const rolesListWithDefaults = DEFAULT_ROLES.concat(
-      rolesList.filter(roleKey => !DEFAULT_ROLES.includes(roleKey))
-  );
   const otherRole = 
-      rolesListWithDefaults[(rolesListWithDefaults.indexOf(roleView) + 1) % 2];
+      rolesList[(rolesList.indexOf(roleView) + 1) % 2];
 
-  const partnerGroupId = user.data.user.partner_group_id;
-  const partnerId = user.data.user.partner_id;
-
-  const commonProps = {
-    setRoleView,
-    roleView,
-    partner: partnerGroupId
-      ? `${PATHS.STATE}/${partnerGroupId}`
-      : `${PATHS.PARTNERS}/${partnerId}`
-  };
-
-  const drawerProps = {leftDrawer, toggleDrawer};
-
-  const roleSpecificComponentMap = {
-    [STUDENT]: (
-      <StudentHeader
-        {...drawerProps}
-        onlyRole={rolesListWithDefaults.length === 1}
-      />
-    ),
-    [ADMIN]: <AdminHeader {...drawerProps} />,
-    [VOLUNTEER]: <VolunteerHeader {...drawerProps} />,
-    [PARTNER]: <PartnerHeader {...drawerProps} />,
-  };
+  const commonProps = { setRoleView, roleView };
 
   const handleOpenSwitchView = (event, menu) => {
     setDropDown(event.currentTarget);
@@ -135,9 +91,7 @@ function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
   };
 
   React.useEffect(() => {
-    setRoleSpecificHeader(
-      roleSpecificComponentMap[roleView || rolesList[0] || DEFAULT_ROLES[0]]
-    );
+    setRole(roleView);
   }, [roleView]);
 
   return (
@@ -150,7 +104,7 @@ function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
         },
       }}
     >
-      {rolesListWithDefaults.length > 2 ? (
+      {rolesList.length > 2 ? (
         <>
           <MenuItem onClick={handleOpenSwitchView}>
             <Typography variant="subtitle1">
@@ -168,13 +122,13 @@ function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
             }}
             keepMounted
             transformOrigin={{
-              vertical: 'top',
+              vertical: "top",
               horizontal: leftDrawer ? "left" : "right",
             }}
             open={Boolean(dropDown)}
             onClose={handleCloseSwitchView}
           >
-            {rolesListWithDefaults.map((role) => (
+            {rolesList.map((role) => (
               <ChangeRole
                 handleCloseSwitchView={handleCloseSwitchView}
                 role={role}
@@ -184,7 +138,7 @@ function ChangeRolesView({ setRoleSpecificHeader, leftDrawer, toggleDrawer }) {
           </Menu>
         </>
       ) : (
-        rolesListWithDefaults.length === 2 && (
+        rolesList.length === 2 && (
           <ChangeRole isToggle={true} role={otherRole} {...commonProps} />
         )
       )}
