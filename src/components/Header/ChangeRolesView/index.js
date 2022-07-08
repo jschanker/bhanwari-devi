@@ -82,7 +82,7 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
 
   const commonProps = { setRoleView, roleView };
   const history = useHistory();
-  const location = useLocation();
+  //const location = useLocation();
 
   const handleOpenSwitchView = (event, menu) => {
     setDropDown(event.currentTarget);
@@ -94,11 +94,15 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
 
   React.useEffect(() => {
     setRole(roleView);
-    if (location !== roles[roleView]) {
+    // if (location !== roles[roleView]) {
       // for load
-      history.push(roles[roleView]);
-    }
+    //  history.push(roles[roleView]);
+    //}
   }, [roleView]);
+
+  React.useEffect(() => {
+    roles[roleView] && history.push(roles[roleView]);
+  }, []);
 
   return (
     <Box

@@ -79,12 +79,13 @@ function AuthenticatedHeaderOption({
   // const pathway = useSelector((state) => state.Pathways);
 
   // special case for partner landing page
-  if (roles[PARTNER]) {
-    if (roles.properties.partnerGroupId) {
-      rolesWithLandingPages[PARTNER].landingPage = 
+  const partnerRole = rolesWithLandingPages.find(role => role.key === PARTNER);
+  if (partnerRole) {
+    if (partnerRole.partnerGroupId) {
+      partnerRole.landingPage = 
         `${PATHS.STATE}/${roles.properties.partnerGroupId}`;
-    } else if(roles.properties.partnerId) {
-      rolesWithLandingPages[PARTNER].landingPage = 
+    } else if(partnerRole.partnerId) {
+      partnerRole.landingPage = 
         `${PATHS.PARTNERS}/${roles.properties.partnerId}`;
     }
   }
