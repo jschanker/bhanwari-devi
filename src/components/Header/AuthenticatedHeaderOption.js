@@ -67,7 +67,7 @@ function AuthenticatedHeaderOption({
   const roles = useSelector(selectRolesData);
 
   const rolesWithLandingPages = roles.map((role) => ({
-    ...role, landingPage: roleLandingPages[role.key]
+    ...role, landingPage: rolesLandingPages[role.key]
   }));
 
   const [role, setRole] = React.useState(null);
