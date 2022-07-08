@@ -70,15 +70,15 @@ function ChangeRole({
   );
 }
 
-function ChangeRolesView({ setRole, rolesList, leftDrawer }) {
-  const defaultRole = rolesList.find(role => role.assignedRole) ||
-      rolesList[0];
+function ChangeRolesView({ setRole, roles, leftDrawer }) {
+  const defaultRole = roles.find(role => role.assignedRole) ||
+      roles[0];
   const [roleView, setRoleView] = React.useState(
     localStorage.getItem(SELECTED_ROLE_KEY) || defaultRole
   );
   const [dropDown, setDropDown] = React.useState(null);
   const otherRole = 
-      rolesList[(rolesList.indexOf(roleView) + 1) % 2];
+      roles[(roles.indexOf(roleView) + 1) % 2];
 
   const commonProps = { setRoleView, roleView };
 
@@ -104,7 +104,7 @@ function ChangeRolesView({ setRole, rolesList, leftDrawer }) {
         },
       }}
     >
-      {rolesList.length > 2 ? (
+      {roles.length > 2 ? (
         <>
           <MenuItem onClick={handleOpenSwitchView}>
             <Typography variant="subtitle1">
@@ -128,7 +128,7 @@ function ChangeRolesView({ setRole, rolesList, leftDrawer }) {
             open={Boolean(dropDown)}
             onClose={handleCloseSwitchView}
           >
-            {rolesList.map((role) => (
+            {roles.map((role) => (
               <ChangeRole
                 handleCloseSwitchView={handleCloseSwitchView}
                 role={role}
@@ -138,7 +138,7 @@ function ChangeRolesView({ setRole, rolesList, leftDrawer }) {
           </Menu>
         </>
       ) : (
-        rolesList.length === 2 && (
+        roles.length === 2 && (
           <ChangeRole isToggle={true} role={otherRole} {...commonProps} />
         )
       )}
