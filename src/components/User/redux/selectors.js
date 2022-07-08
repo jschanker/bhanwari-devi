@@ -54,7 +54,7 @@ const savedRolesToKeysMap = Object.keys(ROLES).reduce((roleKeyMap, roleKey) => {
 
 /**
  * Selector to get user roles
- * @return {Array.<{key: string, msgKey: string, assignedRole:boolean}>}
+ * @return {Array.<{key: string, msgKey: string, assignedRole:boolean, properties: Object}>}
  */
 export const selectRolesData = ({ User }) => {
   const rolesList = (User.data.user.rolesList || []).map(
@@ -76,14 +76,14 @@ export const selectRolesData = ({ User }) => {
       key: roleKey,
       msgKey: ROLES[roleKey].msgKey,
       assignedRole: false,
-      properties: ROLES[roleKey].properties,
+      properties: ROLES[roleKey].properties || null,
     }))
     .concat(
       rolesList.map((roleKey) => ({
         key: roleKey,
         msgKey: ROLES[roleKey].msgKey,
         assignedRole: true,
-        properties: ROLES[roleKey].properties,
+        properties: ROLES[roleKey].properties || null,
       }))
     );
 };

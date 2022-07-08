@@ -65,8 +65,8 @@ function AuthenticatedHeaderOption({
 }) {
   //const [RoleSpecificHeader, setRoleSpecificHeader] = React.useState(null);
   const roles = useSelector(selectRolesData);
-  const history = useHistory();
-  const location = useLocation();
+  // const history = useHistory();
+  // const location = useLocation();
 
   const rolesWithLandingPages = roles.map((role) => ({
     ...role, landingPage: rolesLandingPages[role.key]
@@ -89,12 +89,13 @@ function AuthenticatedHeaderOption({
     }
   }
 
+/*
   useEffect(() => {
     if (location !== rolesWithLandingPages[role.key]) {
       history.push(rolesWithLandingPages[role.key]);
     }
   }, [role]);
-
+*/
 /*
   useEffect(() => {
     sendToken({ token: user.data.token }).then((res) => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation, useHistory } from "react-router-dom";
 import { PATHS } from "../../../constant";
 import useStyles from "../styles";
 import {
@@ -81,6 +81,8 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
       roles[(roles.findIndex(role => role.key === roleView) + 1) % 2];
 
   const commonProps = { setRoleView, roleView };
+  const history = useHistory();
+  const location = useLocation();
 
   const handleOpenSwitchView = (event, menu) => {
     setDropDown(event.currentTarget);
@@ -92,6 +94,10 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
 
   React.useEffect(() => {
     setRole(roleView);
+    if (location !== rolesWithLandingPages[roleView]) {
+      // for load
+      history.push(rolesWithLandingPages[roleView]);
+    }
   }, [roleView]);
 
   return (
