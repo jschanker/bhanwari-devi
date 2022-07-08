@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation, useHistory } from "react-router-dom";
 import { PATHS, interpolatePath } from "../../constant";
 import { hasOneFrom } from "../../common/utils";
 import { actions as userActions } from "../User/redux/action";
@@ -65,6 +65,8 @@ function AuthenticatedHeaderOption({
 }) {
   //const [RoleSpecificHeader, setRoleSpecificHeader] = React.useState(null);
   const roles = useSelector(selectRolesData);
+  const history = useHistory();
+  const location = useLocation();
 
   const rolesWithLandingPages = roles.map((role) => ({
     ...role, landingPage: rolesLandingPages[role.key]
@@ -77,15 +79,21 @@ function AuthenticatedHeaderOption({
   // const pathway = useSelector((state) => state.Pathways);
 
   // special case for partner landing page
-  if (roles[PARTNER]) { 
+  if (roles[PARTNER]) {
     if (roles.properties.partnerGroupId) {
-      roles[PARTNER].landingPage = 
+      rolesWithLandingPages[PARTNER].landingPage = 
         `${PATHS.STATE}/${roles.properties.partnerGroupId}`;
     } else if(roles.properties.partnerId) {
-      roles[PARTNER].landingPage = 
+      rolesWithLandingPages[PARTNER].landingPage = 
         `${PATHS.PARTNERS}/${roles.properties.partnerId}`;
     }
   }
+
+  useEffect(() => {
+    if (location !== rolesWithLandingPages[role.key]) {
+      history.push(rolesWithLandingPages[role.key]);
+    }
+  }, [role]);
 
 /*
   useEffect(() => {

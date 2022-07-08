@@ -78,7 +78,7 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
   );
   const [dropDown, setDropDown] = React.useState(null);
   const otherRole = 
-      roles[(roles.find(role => role.key === roleView) + 1) % 2];
+      roles[(roles.findIndex(role => role.key === roleView) + 1) % 2];
 
   const commonProps = { setRoleView, roleView };
 
