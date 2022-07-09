@@ -4,7 +4,7 @@ function Message({ constantKey, children, args=[] }) {
   const { language, MSG } = useLanguageConstants();
   // TODO: This conversion won't work in general, fix with recursive function
   const strArgs =
-      args.map(arg => typeof arg === 'string' ? arg : MSG[props?.constantKey]);
+      args.map(arg => typeof arg === 'string' ? arg : MSG[arg.props?.constantKey]);
 
   if (constantKey) {
     return MSG[constantKey]?.replace(/%(\d+)/g, (match, num) =>
