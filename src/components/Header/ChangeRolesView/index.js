@@ -101,7 +101,8 @@ function ChangeRolesView({ setRole, roles, leftDrawer }) {
   }, [roleView]);
 
   React.useEffect(() => {
-    roles[roleView] && history.push(roles[roleView]);
+    const roleData = roles.find(role => role.key === roleView); 
+    roleData?.landingPage && history.push(roleData.landingPage);
   }, []);
 
   return (
