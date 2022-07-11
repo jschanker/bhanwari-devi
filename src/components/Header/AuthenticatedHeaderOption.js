@@ -81,12 +81,12 @@ function AuthenticatedHeaderOption({
   // special case for partner landing page
   const partnerRole = rolesWithLandingPages.find(role => role.key === PARTNER);
   if (partnerRole) {
-    if (partnerRole.properties.partnerGroupId == null) {
+    if (partnerRole.properties.partnerGroupId != null) {
       partnerRole.landingPage = 
-        `${PATHS.STATE}/${roles.properties.partnerGroupId}`;
-    } else if(partnerRole.properties.partnerId == null) {
+        `${PATHS.STATE}/${partnerRole.properties.partnerGroupId}`;
+    } else if(partnerRole.properties.partnerId != null) {
       partnerRole.landingPage = 
-        `${PATHS.PARTNERS}/${roles.properties.partnerId}`;
+        `${PATHS.PARTNERS}/${partnerRole.properties.partnerId}`;
     }
   }
 
