@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/bhanwari-devi/precache-manifest.d932f54aeb96de4481a3ffc4794ac074.js"
+  "/bhanwari-devi/precache-manifest.9aba7a722de77700e5cc642d3ca6077f.js"
 );
 
 self.addEventListener('message', (event) => {
