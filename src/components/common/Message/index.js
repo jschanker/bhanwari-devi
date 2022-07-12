@@ -7,7 +7,7 @@ function Message({ constantKey, children, args=[] }) {
   if (key) {
     return MSG[key]?.split(/(%\d+)/g).map((part) => {
       if (/^%\d+/.test(part) && parseInt(part.substring(1)) <= args.length) {
-        return args[parseInt(part.substring(1))];
+        return args[parseInt(part.substring(1)) - 1];
       } else {
         return part;
       }
