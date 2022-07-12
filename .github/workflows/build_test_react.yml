@@ -7,7 +7,7 @@ name: Build and Test React App
 on:
   # Triggers the workflow on push (to given branches) or pull request events
   push:
-    branches: ["main", "dev", "classBatch", "feat/language-support-classBatch", "test2-feat/language-support-classBatch"]
+    branches: ["main", "dev", "classBatch"]
   pull_request:
     types: [opened, reopened]
 
@@ -39,9 +39,9 @@ jobs:
           NODE_OPTIONS: "--max-old-space-size=8192"
           CI: false
           REACT_APP_MERAKI_URL: "https://api.merakilearn.org/"
-      - name: deploy to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./build
-          publish_branch: gh-pages
+      # - name: deploy to gh-pages
+      #  uses: peaceiris/actions-gh-pages@v3
+      #  with:
+      #    deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+      #    publish_dir: ./build
+      #    publish_branch: gh-pages
