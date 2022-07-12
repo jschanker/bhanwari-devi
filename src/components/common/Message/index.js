@@ -2,17 +2,18 @@ import { useLanguageConstants, getTranslationKey } from "../../../common/languag
 
 function Message({ constantKey, children, args=[] }) {
   const { language, MSG } = useLanguageConstants();
-  // TODO: This conversion won't work in general, fix with recursive function
-  const strArgs =
-      args.map(arg => typeof arg === 'string' ? arg : MSG[arg.props?.constantKey]);
+  const key = constantKey || getTranslationKey(children);
 
-  if (constantKey) {
-    return MSG[constantKey]?.replace(/%(\d+)/g, (match, num) =>
-      num <= strArgs.length ? strArgs[num - 1] : match
-    );
+  if (key) {
+    return MSG[key]?.split(/(%\d+)/g).map((part) => {
+      if (/^%\d+/.test(part) && parseInt(part.substring(1)) <= args.length) {
+        return args[parseInt(part.substring(1))];
+      } else {
+        return part;
+      }
+    })
   } else {
-    const key = getTranslationKey(children);
-    return key ? MSG[key] : children;
+    return children;
   }
 }
 
