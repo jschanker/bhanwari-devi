@@ -68,7 +68,7 @@ In her subsequent pursuit for justice, every step along the way she faced intens
 ### Please don't get confuse and run away. We know the above structure was a bit long. But You have to agree that It was detailed, and if you look closely it's actually simple.:P
 ### ![Gif](https://media.giphy.com/media/UB2GxvYsswbBu/giphy.gif) <br/>
 <br/><br/>
-For example, we have component directory called `Course`. All the api, redux, redux-saga, and constant which are directly related with course entity will go inside `Course` component directory. So if anyone works with course related stuff, We want them to always stay inside the `Course` directory. Basically in the below file strucuture. </br>
+For example, we have component directory called `Course`. All the api, redux, redux-saga, and constant which are directly related with course entity will go inside `Course` component directory. So if anyone works with course related stuff, We want them to always stay inside the `Course` directory. Basically in the below file structure. </br>
 ```
 
  ├──components           
