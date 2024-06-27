@@ -6,14 +6,14 @@
     "runtime-main.js": "/bhanwari-devi/static/js/runtime-main.b8cf87b1.js",
     "runtime-main.js.map": "/bhanwari-devi/static/js/runtime-main.b8cf87b1.js.map",
     "static/css/2.373962c5.chunk.css": "/bhanwari-devi/static/css/2.373962c5.chunk.css",
-    "static/js/2.7fcb262a.chunk.js": "/bhanwari-devi/static/js/2.7fcb262a.chunk.js",
-    "static/js/2.7fcb262a.chunk.js.map": "/bhanwari-devi/static/js/2.7fcb262a.chunk.js.map",
+    "static/js/2.252901d6.chunk.js": "/bhanwari-devi/static/js/2.252901d6.chunk.js",
+    "static/js/2.252901d6.chunk.js.map": "/bhanwari-devi/static/js/2.252901d6.chunk.js.map",
     "index.html": "/bhanwari-devi/index.html",
-    "precache-manifest.5bf0be8e908342f76d987414d6783268.js": "/bhanwari-devi/precache-manifest.5bf0be8e908342f76d987414d6783268.js",
+    "precache-manifest.868e35a2c5ef9749969d592f6a54edbf.js": "/bhanwari-devi/precache-manifest.868e35a2c5ef9749969d592f6a54edbf.js",
     "service-worker.js": "/bhanwari-devi/service-worker.js",
     "static/css/2.373962c5.chunk.css.map": "/bhanwari-devi/static/css/2.373962c5.chunk.css.map",
     "static/css/main.1eb090aa.chunk.css.map": "/bhanwari-devi/static/css/main.1eb090aa.chunk.css.map",
-    "static/js/2.7fcb262a.chunk.js.LICENSE.txt": "/bhanwari-devi/static/js/2.7fcb262a.chunk.js.LICENSE.txt",
+    "static/js/2.252901d6.chunk.js.LICENSE.txt": "/bhanwari-devi/static/js/2.252901d6.chunk.js.LICENSE.txt",
     "static/media/ClassCreated.svg": "/bhanwari-devi/static/media/ClassCreated.c46399b2.svg",
     "static/media/ComputerScreen.svg": "/bhanwari-devi/static/media/ComputerScreen.ed255ec6.svg",
     "static/media/ContentTypeCompleted.svg": "/bhanwari-devi/static/media/ContentTypeCompleted.e17d7bf4.svg",
@@ -105,7 +105,7 @@
   "entrypoints": [
     "static/js/runtime-main.b8cf87b1.js",
     "static/css/2.373962c5.chunk.css",
-    "static/js/2.7fcb262a.chunk.js",
+    "static/js/2.252901d6.chunk.js",
     "static/css/main.1eb090aa.chunk.css",
     "static/js/main.32146709.chunk.js"
   ]
