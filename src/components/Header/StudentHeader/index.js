@@ -1,19 +1,15 @@
 import React from "react";
-import { Link } from "react-router-dom";
+
 import { DropDown, MobileDropDown } from "../DropDown";
-import {
-  Box,
-  Typography,
-  // Menu,
-  MenuItem,
-  Button,
-} from "@mui/material";
+import { Box, Typography, Menu, MenuItem, Button } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import HeaderNavLink from "../HeaderNavlink";
 import SearchHeader from "../SearchHeader";
 import Message from "../../common/Message";
 import { PATHS } from "../../../constant";
+import TextButtonDropDownMenu from "../TextButtonDropDownMenu";
+import LaunchOutlinedIcon from "@mui/icons-material/LaunchOutlined";
 import {
   LEARN_KEY,
   MENU_ITEMS,
@@ -25,19 +21,24 @@ import {
   // STUDENT_ROLE_KEY as STUDENT,
   // VOLUNTEER_ROLE_KEY as VOLUNTEER,
 } from "../constant";
+import SearchPopup from "../../SearchBar/SearchPopup";
+import ExternalLink from "../../common/ExternalLink";
+import useStyles from "../../Header";
 
 function CommonLeftStudentHeader({ toggleDrawer }) {
+  const classes = useStyles();
   return (
     <>
       <HeaderNavLink
-        to={PATHS.NEW_USER_DASHBOARED}
+        to={PATHS.NEW_USER_DASHBOARD}
         text={<Message constantKey="DASHBOARD" />}
         toggleDrawer={toggleDrawer}
       />
       <HeaderNavLink
-        to={PATHS.MENTOR}
-        text={<Message constantKey="MENTOR" />}
+        to={PATHS.SCRATCH}
+        text={<Message constantKey="SCRATCH" />}
         toggleDrawer={toggleDrawer}
+        externalLink="true"
       />
     </>
   );
@@ -45,9 +46,6 @@ function CommonLeftStudentHeader({ toggleDrawer }) {
 
 function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
   const [learn, setLearn] = React.useState(null);
-  const handleOpenLearn = (event) => {
-    setLearn(event.currentTarget);
-  };
 
   const handleCloseLearn = () => {
     setLearn(null);
@@ -64,18 +62,16 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
           },
         }}
       >
-        <MenuItem onClick={handleOpenLearn}>
-          <Typography variant="subtitle1">
-            <Message constantKey={MENU_ITEMS[LEARN_KEY].msgKey} />
-          </Typography>
-          {learn ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-        </MenuItem>
-        <DropDown
-          dropDown={LEARN_KEY}
-          indicator={learn}
-          handleClose={handleCloseLearn}
-          toggleDrawer={toggleDrawer}
-        />
+        <TextButtonDropDownMenu
+          btnTextMsgKey={MENU_ITEMS[LEARN_KEY]?.msgKey}
+          // attachRight={!leftDrawer}
+          menuContainerProps={{
+            id: "menu-appbar",
+          }}
+          sx={{ color: "black" }}
+        >
+          <DropDown dropDown={LEARN_KEY} toggleDrawer={toggleDrawer} />
+        </TextButtonDropDownMenu>
 
         <CommonLeftStudentHeader toggleDrawer={toggleDrawer} />
       </Box>
@@ -100,9 +96,9 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
           pr: onlyRole && 2,
         }}
       >
-        {!leftDrawer && <SearchHeader />}
+        {!leftDrawer && <SearchPopup />}
 
-        <HeaderNavLink
+        {/* <HeaderNavLink
           to={PATHS.ADMISSION}
           text={<Message constantKey="NAVGURUKUL_ADMISSION" />}
           toggleDrawer={toggleDrawer}
@@ -111,7 +107,7 @@ function StudentHeader({ leftDrawer, toggleDrawer, onlyRole }) {
           to={PATHS.OPPORTUNITIES}
           text={<Message constantKey="OPPORTUNITIES" />}
           toggleDrawer={toggleDrawer}
-        />
+        /> */}
       </Box>
     </>
   );

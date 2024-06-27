@@ -5,6 +5,7 @@ import HeaderNavLink from "../HeaderNavlink";
 import SearchHeader from "../SearchHeader";
 import Message from "../../common/Message";
 import { PATHS } from "../../../constant";
+import SearchPopup from "../../SearchBar/SearchPopup";
 
 function AdminHeader({ leftDrawer, toggleDrawer }) {
   const user = useSelector(({ User }) => User);
@@ -21,11 +22,23 @@ function AdminHeader({ leftDrawer, toggleDrawer }) {
           },
         }}
       >
-        <HeaderNavLink
+        {/* <HeaderNavLink
           to={PATHS.USER}
           text={<Message constantKey="STUDENTS" />}
           toggleDrawer={toggleDrawer}
+        /> */}
+        <HeaderNavLink
+          to={PATHS.CLASS}
+          text={<Message constantKey="CLASSES" />}
+          toggleDrawer={toggleDrawer}
         />
+        {/* 
+        <HeaderNavLink
+          to={PATHS.TUTOR}
+          text={<Message constantKey="TUTOR" />}
+          toggleDrawer={toggleDrawer}
+        /> */}
+
         <HeaderNavLink
           to={PATHS.VOLUNTEER}
           text={<Message constantKey="VOLUNTEERS" />}
@@ -39,12 +52,16 @@ function AdminHeader({ leftDrawer, toggleDrawer }) {
         {partnerGroupId && (
           <HeaderNavLink
             to={`${PATHS.STATE}/${partnerGroupId}`}
-            text={<Message constantKey="DASHBOARD" />}
+            text={
+              <Message
+                constantKey={partnerGroupId ? "STATEPARTNER" : "DASHBOARD"}
+              />
+            }
             toggleDrawer={toggleDrawer}
           />
         )}
       </Box>
-      {!leftDrawer && <SearchHeader />}
+      {!leftDrawer && <SearchPopup />}
     </>
   );
 }

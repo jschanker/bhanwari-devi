@@ -12,6 +12,7 @@ import useStyles from "../styles";
 
 function MiscellaneousCourses() {
   const dispatch = useDispatch();
+  const user = useSelector(({ User }) => User);
   const { data } = useSelector(({ Course }) => Course);
   const pathway = useSelector((state) => state);
   const classes = useStyles();
@@ -22,8 +23,12 @@ function MiscellaneousCourses() {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(pathwayActions.getPathways());
-  }, [dispatch]);
+    dispatch(
+      pathwayActions.getPathways({
+        authToken: user,
+      })
+    );
+  }, [dispatch, user]);
 
   const pathwayCourseId =
     (pathway.Pathways.data &&
@@ -65,15 +70,14 @@ function MiscellaneousCourses() {
           </Grid>
         </Grid>
 
-        <Box sx={{ mt: 10 }}>
-          <Typography variant="h5" align={isActive ? "center" : "left"}>
+        <Box sx={{ mt: isActive ? 5 : 10 }}>
+          <Typography variant="h6" align={isActive ? "center" : "left"}>
             Courses
           </Typography>
-          <Grid sx={{ mt: 2 }} container spacing={2}>
-            {console.log(otherCourses)}
+          <Grid sx={{ mt: "16px" }} container spacing={2}>
             {otherCourses &&
               otherCourses.map((item, index) => (
-                <Grid item key={index} xs={12} sm={6} md={3}>
+                <Grid item key={index} xs={12} sm={6} md={4} lg={3}>
                   <Link
                     className={classes.pathwayLink}
                     to={interpolatePath(PATHS.PATHWAY_COURSE_CONTENT, {
@@ -87,7 +91,7 @@ function MiscellaneousCourses() {
                       className={classes.pathwayCard}
                       sx={{
                         background: "#EEF1F5",
-                        m: "15px",
+                        m: isActive ? "16px" : "15px",
                         height: "190px",
                         display: "flex",
                         flexDirection: "column",

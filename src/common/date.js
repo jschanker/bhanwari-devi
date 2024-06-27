@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   format as dateFnsFormat,
   isBefore as comesBefore,
@@ -6,7 +7,7 @@ import {
   intervalToDuration,
 } from "date-fns";
 import { zonedTimeToUtc } from "date-fns-tz";
-// import {formatInTimeZone as ftz} from "date-fns-tz";
+import { formatInTimeZone as ftz } from "date-fns-tz";
 /**
  * Returns a copy of the given date if supplied a Date object input or a Date
  *    object from the given timestamp.
@@ -228,13 +229,13 @@ export const millisecondsUntil = (date) => {
 //   return makeDateFrom(date).toISOString();
 // };
 
-// const formatInTimeZone = (date, timeZone, formatStr) => {
-//   return ftz(makeDateFrom(date), timeZone, formatStr);
-// };
+const formatInTimeZone = (date, timeZone, formatStr) => {
+  return ftz(makeDateFrom(date), timeZone, formatStr);
+};
 
-// const formatInUtc = (date, formatStr) => {
-//   return formatInTimeZone(date, "UTC", formatStr);
-// };
+export const formatInUtc = (date, formatStr) => {
+  return formatInTimeZone(date, "UTC", formatStr);
+};
 
 /**
  * Wrapper for the date-fns format function but allows date strings
@@ -247,8 +248,12 @@ export const millisecondsUntil = (date) => {
  * @return {string} the formatted date string in the user's local time zone
  */
 export const format = (date, formatStr, options) => {
-  const dateToFormat = makeDateFrom(date);
-  return dateFnsFormat(dateToFormat, formatStr, options);
+  if (date) {
+    const dateToFormat = makeDateFrom(date);
+    return dateFnsFormat(dateToFormat, formatStr, options);
+  } else {
+    return "";
+  }
 };
 
 // module.exports = { timeLeftFormat, format };

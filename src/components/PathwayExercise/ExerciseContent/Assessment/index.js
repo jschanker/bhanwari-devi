@@ -1,239 +1,166 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Container, Box, Typography, Paper, Button, Grid } from "@mui/material";
-import useStyles from "../../styles";
-import get from "lodash/get";
-import DOMPurify from "dompurify";
+import { Container, Box, Button } from "@mui/material";
 import axios from "axios";
 import { METHODS } from "../../../../services/api";
+import { useParams } from "react-router-dom";
+import AssessmentContent from "./AssessmentContent";
 
-function UnsafeHTML(props) {
-  const { html, Container, ...otherProps } = props;
-  const sanitizedHTML = DOMPurify.sanitize(html);
-  return (
-    <Container
-      {...otherProps}
-      dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
-    />
-  );
-}
-
-const headingVarients = {};
-
-[Typography, "h2", "h3", "h4", "h5", "h6"].forEach(
-  (Name, index) =>
-    (headingVarients[index + 1] = (data) => (
-      <UnsafeHTML
-        Container={Name}
-        className="heading"
-        html={data}
-        {...(index === 0 ? { component: "h1", variant: "h6" } : {})}
-      />
-    ))
-);
-
-const AssessmentContent = ({
-  content,
-  answer,
-  setAnswer,
-  setSolution,
-  submit,
-  setSubmit,
-  correct,
-  index,
-  setSubmitDisable,
-  triedAgain,
-  setTriedAgain,
-  submitDisable,
-}) => {
-  const classes = useStyles();
-  console.log("content", content);
-  if (content.component === "header") {
-    if (triedAgain > 1) {
-      return headingVarients[content.variant](
-        DOMPurify.sanitize(get(content, "value"))
-      );
-    }
-  }
-  if (content.component === "text") {
-    const text = DOMPurify.sanitize(get(content, "value"));
-    if (index === 0) {
-      return (
-        <Box sx={{ mt: "32px" }}>
-          <Typography variant="h6" align="center">
-            Output
-          </Typography>
-
-          <Box
-            sx={{
-              mt: "32px",
-              bgcolor: correct ? "success.light" : "error.light",
-              p: "16px",
-              borderRadius: "8px",
-            }}
-          >
-            <UnsafeHTML Container={Typography} variant="body1" html={text} />
-          </Box>
-        </Box>
-      );
-    }
-    if (index === 2) {
-      if (triedAgain > 1) {
-        return (
-          <Box
-            sx={{
-              p: "16px 0",
-              borderRadius: "8px",
-            }}
-          >
-            <UnsafeHTML Container={Typography} variant="body1" html={text} />
-          </Box>
-        );
-      } else {
-        return (
-          <Grid container spacing={2} mt={3} mb={10}>
-            <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  setTriedAgain(triedAgain + 1);
-                }}
-              >
-                <Typography variant="subtitle2">
-                  See Answer & Explanation
-                </Typography>
-              </Button>
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <Button
-                variant="outlined"
-                fullWidth
-                onClick={() => {
-                  setAnswer();
-                  setSubmit();
-                  setSubmitDisable();
-                }}
-              >
-                <Typography variant="subtitle2">Re-try</Typography>
-              </Button>
-            </Grid>
-          </Grid>
-        );
-      }
-    }
-  }
-  if (content.component === "questionCode") {
-    const text = DOMPurify.sanitize(get(content, "value"));
-    return (
-      <Box
-        sx={{
-          mt: "32px",
-          bgcolor: "#F7F7F7",
-          p: "16px 16px 22px 16px",
-          borderRadius: "8px",
-        }}
-      >
-        <UnsafeHTML
-          Container={Typography}
-          // sx={{ m: "2rem 0" }}
-          sx={{ m: "16px" }}
-          variant="body1"
-          html={text}
-        />
-      </Box>
-    );
-  }
-  if (content.component === "questionExpression") {
-    const text = DOMPurify.sanitize(get(content, "value"));
-    return (
-      <UnsafeHTML
-        Container={Typography}
-        sx={{ m: "2rem 0", fontWeight: 700, fontSize: "1.2rem" }}
-        variant="body1"
-        html={text}
-      />
-    );
-  }
-
-  if (content.component === "options") {
-    return (
-      <Box sx={{ m: "32px 0px" }}>
-        {Object.values(content.value).map((item, index) => {
-          console.log("item", item.value);
-          return (
-            <Paper
-              elevation={3}
-              sx={{
-                height: "59px",
-                mb: "16px",
-                cursor: "pointer",
-              }}
-              className={
-                submit
-                  ? correct
-                    ? answer === item.id && classes.correctAnswer
-                    : answer === item.id && classes.inCorrectAnswer
-                  : answer === item.id && classes.option
-              }
-              // onClick={() => setAnswer(item.id)}
-              onClick={() => !submitDisable && setAnswer(item.id)}
-            >
-              <Typography variant="body1" sx={{ p: "16px" }}>
-                {item.value}
-              </Typography>
-            </Paper>
-          );
-        })}
-      </Box>
-    );
-  }
-  if (content.component === "solution") {
-    setSolution(content.value);
-  }
-  return "";
-};
-
-function Assessment({ data, exerciseId }) {
+function Assessment({
+  data,
+  exerciseId,
+  exerciseSlugId,
+  courseData,
+  setCourseData,
+  setProgressTrackId,
+  res,
+  triger,
+  setTriger,
+  lang,
+}) {
   const user = useSelector(({ User }) => User);
-  const [answer, setAnswer] = useState();
+
+  const [answer, setAnswer] = useState([]);
   const [correct, setCorrect] = useState();
   const [solution, setSolution] = useState();
   const [submit, setSubmit] = useState();
   const [submitDisable, setSubmitDisable] = useState();
   const [status, setStatus] = useState();
-  const [triedAgain, setTriedAgain] = useState(0);
+  const [triedAgain, setTriedAgain] = useState(res?.attempt_count);
+  const params = useParams();
+  const [type, setType] = useState("single");
+  const [wrongAnswer, setWrongAnswer] = useState();
 
-  useEffect(() => {
-    axios({
-      method: METHODS.POST,
-      url: `${process.env.REACT_APP_MERAKI_URL}/assessment/student/result`,
-      headers: {
-        accept: "application/json",
-        Authorization: user.data.token,
-      },
-      data: { assessment_id: exerciseId, status: status },
-    }).then((res) => {
-      console.log("res", res);
-    });
-  }, [status]);
-
-  const submitAssessment = () => {
-    setSubmit(true);
-    if (answer == solution) {
-      setCorrect(true);
-      setStatus("Pass");
-      setTriedAgain(triedAgain + 2);
-      setSubmitDisable(true);
-    } else {
-      setCorrect(false);
-      setStatus("Fail");
-      setTriedAgain(triedAgain + 1);
-      setSubmitDisable(true);
+  // Assessment submit handler
+  const isValuesCorrect = (value1, value2) => {
+    if (value1?.length !== value2?.length) {
+      return false; // Lengths are different, so they are not the same
     }
+
+    for (let i = 0; i < value1?.length; i++) {
+      if (!value2?.includes(value1[i]?.value)) {
+        return false; // Elements are different, so they are not the same
+      }
+    }
+
+    return true; // Length and elements match, so they are the same
   };
 
-  console.log("data", data);
+  const isCorrect = isValuesCorrect(solution, answer);
+
+  const calculateSelections = () => {
+    let correctSelections = 0;
+    let incorrectSelections = 0;
+
+    answer &&
+      answer.forEach((option) => {
+        const isCorrect = solution?.some(
+          (correctOption) => correctOption?.value === option
+        );
+        if (isCorrect) {
+          correctSelections++;
+        } else {
+          incorrectSelections++;
+        }
+      });
+
+    return { correctSelections, incorrectSelections };
+  };
+
+  const { correctSelections, incorrectSelections } = calculateSelections();
+
+  const submitAssessment = (isCorrect) => {
+    const correctStr = isCorrect ? "Pass" : "Fail";
+    setSubmit(true);
+
+    // Commented this API to test if progress tracking is working fine now
+
+    // axios({
+    //   method: METHODS.POST,
+    //   url: `${process.env.REACT_APP_MERAKI_URL}/progressTracking/learningTrackStatus`,
+    //   headers: {
+    //     accept: "application/json",
+    //     Authorization: user.data?.token || "",
+    //   },
+    //   data: {
+    //     pathway_id: params.pathwayId,
+    //     course_id: params.courseId,
+    //     exercise_id: courseData.id,
+    //   },
+    // });
+    if (isCorrect) {
+      setTriedAgain(triedAgain + 2);
+    } else {
+      setTriedAgain(triedAgain + 1);
+    }
+    axios({
+      method: METHODS.POST,
+      // url: `${process.env.REACT_APP_MERAKI_URL}/assessment/student/result/v2`,
+      url: `${process.env.REACT_APP_MERAKI_URL}/assessment/slug/complete`,
+      headers: {
+        accept: "application/json",
+        Authorization:
+          user?.data?.token || localStorage.getItem("studentAuthToken"),
+      },
+      data: {
+        // assessment_id: exerciseId,
+        slug_id: exerciseSlugId,
+        selected_option: answer,
+        status: correctStr,
+        course_id: params.courseId,
+        lang: lang,
+      },
+    })
+      .then((res) => {})
+      .catch((err) => {});
+    setCorrect(isCorrect);
+    setStatus(correctStr);
+    setSubmitDisable(true);
+    setTriger(!triger);
+  };
+
+  useEffect(() => {
+    // adding a nullish coalescing operator (??), so that the null value can not effect on the assessment.
+    // if (res?.assessment_id === (courseData ?? {}).id) {
+    if (res?.slug_id === (courseData ?? {}).slug_id) {
+      if (res?.attempt_status === "CORRECT") {
+        setAnswer(res?.selected_option);
+        setCorrect(true);
+        setTriedAgain(2);
+        setStatus("pass");
+        setSubmitDisable(true);
+        setSubmit(true);
+      } else if (res?.attempt_status === "INCORRECT") {
+        setAnswer(res?.selected_option);
+        setTriedAgain(res?.attempt_count);
+        setSubmitDisable(true);
+        setSubmit(true);
+      } else if (res?.attempt_status === "PARTIALLY_CORRECT") {
+        setAnswer(res?.selected_option);
+        setTriedAgain(res?.attempt_count);
+        setSubmitDisable(true);
+        setSubmit(true);
+      } else if (res?.attempt_status === "PARTIALLY_INCORRECT") {
+        setAnswer(res?.selected_option);
+        setTriedAgain(res?.attempt_count);
+        setSubmitDisable(true);
+        setSubmit(true);
+      }
+    }
+  }, [res, triedAgain]);
+
+  // const handleOptionClick = (id) => {
+  //   if (!submitDisable) {
+  //     if (answer.includes(id)) {
+  //       // Item is already selected, so remove it
+  //       setAnswer(answer.filter((itemId) => itemId !== id));
+  //     } else {
+  //       // Item is not selected, so add it
+  //       setAnswer([...answer, id]);
+  //     }
+  //   }
+  // };
+  // console.log("data", data);
 
   return (
     <Container maxWidth="sm" sx={{ align: "center", m: "40px 0 62px 0" }}>
@@ -245,11 +172,18 @@ function Assessment({ data, exerciseId }) {
             setAnswer={setAnswer}
             setSolution={setSolution}
             submit={submit}
+            solution={solution}
             setSubmit={setSubmit}
             correct={correct}
             setTriedAgain={setTriedAgain}
             setSubmitDisable={setSubmitDisable}
             submitDisable={submitDisable}
+            triedAgain={triedAgain}
+            submitAssessment={submitAssessment}
+            params={params}
+            type={type}
+            setType={setType}
+            setWrongAnswer={setWrongAnswer}
           />
         ))}
 
@@ -258,7 +192,7 @@ function Assessment({ data, exerciseId }) {
           variant="contained"
           sx={{ width: "256px", p: "8px 16px 8px 16px" }}
           color={answer ? "primary" : "secondary"}
-          disabled={!answer}
+          disabled={!answer?.length}
           onClick={submitAssessment}
         >
           Submit
@@ -267,16 +201,38 @@ function Assessment({ data, exerciseId }) {
 
       {data &&
         submit &&
-        data.map((content) => {
-          const dataArr =
-            content.value && correct
-              ? content.value.correct
-              : content.value.incorrect;
+        data?.map((content) => {
+          let dataArr = [];
+          if (
+            data[2]?.type === "single" ||
+            data[2]?.assessment_type === "single"
+          ) {
+            dataArr =
+              content?.value && correct
+                ? content?.value?.correct
+                : content?.value?.incorrect;
+          } else if (
+            data[2]?.type === "multiple" ||
+            data[2]?.assessment_type === "multiple"
+          ) {
+            dataArr =
+              content?.value && res?.attempt_status === "PARTIALLY_CORRECT"
+                ? content?.value?.partially_correct
+                : content?.value &&
+                  res?.attempt_status === "PARTIALLY_INCORRECT"
+                ? content?.value?.partially_incorrect
+                : content?.value && res?.attempt_status === "CORRECT"
+                ? content?.value?.correct
+                : content?.value?.incorrect;
+          }
+
           return (
-            content.component === "output" &&
-            dataArr.map((content, index) => (
+            content?.component === "output" &&
+            dataArr?.map((content, index) => (
               <AssessmentContent
+                finalDesicion={res?.attempt_status}
                 content={content}
+                Partially_ans={dataArr[0]}
                 index={index}
                 correct={correct}
                 setTriedAgain={setTriedAgain}
@@ -286,6 +242,10 @@ function Assessment({ data, exerciseId }) {
                 setSubmitDisable={setSubmitDisable}
                 triedAgain={triedAgain}
                 submitDisable={submitDisable}
+                submitAssessment={submitAssessment}
+                type={type}
+                setType={setType}
+                setWrongAnswer={setWrongAnswer}
               />
             ))
           );

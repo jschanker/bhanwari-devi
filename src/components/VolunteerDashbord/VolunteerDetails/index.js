@@ -54,14 +54,18 @@ function VolunteerDashboard() {
         accept: "application/json",
         Authorization: user.data.token,
       },
-    }).then((res) => {
-      setVolunteer(res.data);
-      setCacheVolunteer(res.data);
-      setSlicedVolunteer(
-        res.data.slice(pageNumber * limit, (pageNumber + 1) * limit)
-      );
-      pageCount = Math.ceil(slicedVolunteer && slicedVolunteer.length / limit);
-    });
+    })
+      .then((res) => {
+        setVolunteer(res.data);
+        setCacheVolunteer(res.data);
+        setSlicedVolunteer(
+          res.data.slice(pageNumber * limit, (pageNumber + 1) * limit)
+        );
+        pageCount = Math.ceil(
+          slicedVolunteer && slicedVolunteer.length / limit
+        );
+      })
+      .catch((err) => {});
   }, []);
 
   const languageMap = {
@@ -154,8 +158,6 @@ function VolunteerDashboard() {
     // setVolunteer(data)
     setSlicedVolunteer(slicedData);
   }, [debouncedText, pageNumber]);
-
-  console.log("Testing");
 
   return (
     <>

@@ -15,19 +15,34 @@ import useStyles from "./styles";
 
 function SelectTrack({ setDisable, pathwayId, setPathwayId }) {
   const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
+  const user = useSelector(({ User }) => User);
   const classes = useStyles();
-  const { data } = useSelector((state) => state.Pathways);
-
-  const handleChange = async (id) => {
-    setDisable(false);
-    setPathwayId(id);
+  const { data } = useSelector((state) => state.PathwaysDropdow);
+  useEffect(() => {
+    if (pathwayId.length === 0) {
+      setDisable(true);
+    } else {
+      setDisable(false);
+    }
+  }, [pathwayId]);
+  const handleChange = (id) => {
+    if (pathwayId.includes(id)) {
+      setPathwayId(pathwayId.filter((item) => item !== id));
+    } else {
+      setPathwayId([...pathwayId, id]);
+    }
   };
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(pathwayActions.getPathways());
-  }, []);
+    dispatch(
+      pathwayActions.getPathwaysDropdown({
+        authToken: user,
+      })
+    );
+  }, [dispatch, user]);
+
   return (
     <Container sx={{ mt: 6 }} maxWidth="lg">
       <Container maxWidth="sm" mb={3}>
@@ -35,20 +50,27 @@ function SelectTrack({ setDisable, pathwayId, setPathwayId }) {
           Please choose what you’d like to teach
         </Typography>
         <Typography variant="body1" align="left" color="text.secondary">
-          We recommend giving about 2 hours per week for about 15 weeks duration
+          We run the learning tracks in a batch format with multiple live
+          classes.
         </Typography>
-
+      </Container>
+      <Container maxWidth="md" mb={3}>
         <Grid container columnSpacing={isActive ? 2 : 0} mt={2} mb={2}>
           {data &&
             data.pathways &&
             data.pathways.map((item) => {
-              if (item.name == "Python" || item.name == "Spoken English") {
+              if (
+                item.name === "Python" ||
+                item.name === "Spoken English" ||
+                item.name?.toLocaleLowerCase() ===
+                  "Amazon Coding Bootcamp".toLocaleLowerCase()
+              ) {
                 return (
-                  <Grid item xs={6} ms={6} md={6}>
+                  <Grid item xs={4} ms={4} md={4} gap={1}>
                     <Card
                       elevation={2}
                       className={
-                        pathwayId == item.id
+                        pathwayId?.includes(item.id)
                           ? classes.selectedTrack
                           : classes.TrackCard
                       }

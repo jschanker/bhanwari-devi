@@ -5,6 +5,8 @@ const useStyles = makeStyles(() => ({
   },
   imageContainer: {
     width: "100%",
+    justifyContent: "left",
+    alignItems: "left",
   },
 
   bgImage: {
@@ -12,6 +14,13 @@ const useStyles = makeStyles(() => ({
     objectFit: "cover",
     height: "290px",
     backgroundColor: "pink",
+  },
+  Right_tick: {
+    marginLeft: "8px",
+    verticalAlign: "baseline",
+  },
+  dialog: {
+    padding: "40px",
   },
 }));
 export default useStyles;

@@ -15,17 +15,26 @@ const getIsMobile = () => {
   return check;
 };
 
+const isTouchScreen = () => {
+  // https://stackoverflow.com/a/4819886
+  return (
+    "ontouchstart" in window ||
+    navigator.maxTouchPoints > 0 ||
+    navigator.msMaxTouchPoints > 0
+  );
+};
+
 const getQueryVariable = (queryVars) => {
   var query = window.location.search.substring(1);
   var vars = query.split("&");
   for (var i = 0; i < vars.length; i++) {
     var pair = vars[i].split("=");
     if (decodeURIComponent(pair[0]) == queryVars) {
-      return decodeURIComponent(pair[1]);
+      return decodeURIComponent(vars[i]);
     }
   }
 };
 
 const hasOneFrom = (arr1, arr2) => arr2.some((item) => arr1.includes(item));
 
-module.exports = { getIsMobile, getQueryVariable, hasOneFrom };
+module.exports = { getIsMobile, getQueryVariable, hasOneFrom, isTouchScreen };

@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mobileBox: {
     width: 415,
-    height: 750,
+    height: "100%",
   },
   RightBox: {
     flexGrow: 1,
@@ -36,6 +36,29 @@ const useStyles = makeStyles((theme) => ({
   },
   active: {
     color: "#48a145",
+  },
+  buttonLink: {
+    textDecoration: "none",
+  },
+  scratchLink: {
+    height: "36px",
+    padding: "6px 16px",
+    display: "flex",
+    alignItems: "center",
+    "&:hover": {
+      backgroundColor: "#E9F5E9",
+      borderRadius: "8px",
+    },
+  },
+  donate: {
+    height: "36px",
+    padding: "6px 16px",
+    display: "flex",
+    alignItems: "center",
+    "&:hover": {
+      backgroundColor: "#E9F5E9",
+      borderRadius: "8px",
+    },
   },
 }));
 

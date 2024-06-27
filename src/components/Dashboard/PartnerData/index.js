@@ -40,18 +40,23 @@ function PartnerDashboard() {
         accept: "application/json",
         Authorization: user.data.token,
       },
-    }).then((res) => {
-      if (res.data.partners.length < 1) {
-        setSlicedPartners([]);
-        setMessage("There are no results to display");
-      } else {
-        setPartners(res.data.partners);
-        setSlicedPartners(
-          res.data.partners.slice(pageNumber * limit, (pageNumber + 1) * limit)
-        );
-        setTotalCount(res.data.partners.length);
-      }
-    });
+    })
+      .then((res) => {
+        if (res.data.partners.length < 1) {
+          setSlicedPartners([]);
+          setMessage("There are no results to display");
+        } else {
+          setPartners(res.data.partners);
+          setSlicedPartners(
+            res.data.partners.slice(
+              pageNumber * limit,
+              (pageNumber + 1) * limit
+            )
+          );
+          setTotalCount(res.data.partners.length);
+        }
+      })
+      .catch((err) => {});
   }, [debouncedText]);
 
   useEffect(() => {
@@ -115,10 +120,12 @@ function PartnerDashboard() {
             accept: "application/json",
             Authorization: user.data.token,
           },
-        }).then((res) => {
-          setPartners(res.data.partners);
-          setTotalCount(res.data.count);
-        });
+        })
+          .then((res) => {
+            setPartners(res.data.partners);
+            setTotalCount(res.data.count);
+          })
+          .catch((err) => {});
       })
       .catch(() => {
         toast.error("Something went wrong", {
@@ -183,7 +190,7 @@ function PartnerDashboard() {
                 </th>
                 <th>Meraki - Android Link</th>
                 <th>Meraki - Web Link</th>
-                <th>Partner specific url</th>
+                {/* <th>Partner specific url</th> */}
               </tr>
             </thead>
             <tbody>
@@ -199,7 +206,7 @@ function PartnerDashboard() {
                         {item.name}
                       </Link>
                     </td>
-                    <td data-column="Total students">{item.users}</td>
+                    <td data-column="Total students">{item.user}</td>
                     {item.meraki_link ? (
                       <td data-column="Meraki Link">
                         <a
@@ -264,7 +271,7 @@ function PartnerDashboard() {
                         </div>
                       </td>
                     )}
-                    <td data-column="Meraki Link">
+                    {/* <td data-column="Meraki Link">
                       <a
                         className="meraki_link"
                         target="_blank"
@@ -284,7 +291,7 @@ function PartnerDashboard() {
                       >
                         <i className="clipboard fa fa-copy"></i>
                       </CopyToClipboard>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })}

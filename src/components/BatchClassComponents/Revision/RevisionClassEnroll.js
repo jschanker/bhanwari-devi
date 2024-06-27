@@ -35,13 +35,14 @@ function RevisionClassEnroll(props) {
         accept: "application/json",
         Authorization: user?.data?.token,
       },
-    }).then((res) => {
-      // setUserEnrolledClasses(res.data);
-      const data = res.data;
-      console.log(data);
-      setRevisionData(data);
-      setDataToEnroll(data[0]);
-    });
+    })
+      .then((res) => {
+        // setUserEnrolledClasses(res.data);
+        const data = res.data;
+        setRevisionData(data);
+        setDataToEnroll(data[0]);
+      })
+      .catch((err) => {});
   }, [dropOutOpen, open]);
   return (
     <Container mt={2} maxWidth="lg">
@@ -90,7 +91,6 @@ function RevisionClassEnroll(props) {
                           onChange={(e) => {
                             setRevisionId(e.target.value);
                             setDataToEnroll(item);
-                            console.log(e.target.value);
                           }}
                           control={<Radio />}
                           // you can put your value using {} <- this

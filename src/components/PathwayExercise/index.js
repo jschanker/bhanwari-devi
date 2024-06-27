@@ -15,20 +15,33 @@ import { PATHS, interpolatePath, versionCode } from "../../constant";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick.css";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-// const {languageMap} = require("../../pages/CourseContent/languageMap");
-
 import {
   Container,
   Box,
   AppBar,
   Toolbar,
+  useMediaQuery,
   Typography,
   Button,
   Select,
   MenuItem,
 } from "@mui/material";
-import languageMap from "../../pages/CourseContent/languageMap";
+import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
 import CompletionComponent from "./CourseCompletion/CompletionComponent";
+import ExerciseImage from "./ExerciseImage/ExerciseImage.js";
+import { breakpoints } from "../../theme/constant";
+// import { useTheme } from "@mui/material/styles";
+// import { PythonProvider, usePython } from "../CodeEditor/react-py";
+
+const languageMap = {
+  "hi-IN": "Hindi",
+  en: "English",
+  "te-IN": "Telugu",
+  ta: "Tamil",
+  mr: "Marathi",
+  "or-IN": "Oriya",
+  "kn-IN": "Kannada",
+};
 
 const Exercise = ({
   course,
@@ -39,20 +52,28 @@ const Exercise = ({
   params,
   progressTrackId,
 }) => {
-  const start = exerciseId > 6 ? exerciseId - 6 : 0;
-  const courseLength =
-    course && course.length && exerciseId < 7
-      ? course.slice(start, 7)
-      : course.slice(start, exerciseId + 1);
+  const courseLength = course;
+  const imageRef = React.useRef();
+
+  useEffect(() => {
+    if (imageRef.current) {
+      imageRef.current.scrollIntoView({
+        block: "center",
+      });
+    }
+  }, [imageRef.current]);
+
   return (
     <>
-      {courseLength.map((exercise, index) => {
+      {courseLength?.map((exercise, index) => {
         return (
           <NavigationComponent
+            key={index}
             exercise={exercise}
             params={params}
             history={history}
-            index={index + start}
+            index={index}
+            imageRef={exerciseId === index ? imageRef : null}
             exerciseId={exerciseId}
             setExerciseId={setExerciseId}
             classes={classes}
@@ -64,52 +85,6 @@ const Exercise = ({
   );
 };
 
-function ExerciseImage({
-  selected,
-  contentType,
-  setExerciseId,
-  onClick,
-  index,
-  progressTrackId,
-}) {
-  const classes = useStyles();
-
-  const contentTypeMap = {
-    assessment: selected
-      ? index <= progressTrackId
-        ? "assessmentRevisit"
-        : "assessmentSelected"
-      : index <= progressTrackId
-      ? "assessmentCompleted"
-      : "assessment",
-    class_topic: selected
-      ? index <= progressTrackId
-        ? "classTypeRevisit"
-        : "classTypeSelected"
-      : index <= progressTrackId
-      ? "classTypeCompleted"
-      : "classtype",
-    exercise: selected
-      ? index <= progressTrackId
-        ? "contentTypeRevist"
-        : "contentTypeSelected"
-      : index <= progressTrackId
-      ? "ContentTypeCompleted"
-      : "contenttype",
-  };
-  return (
-    <img
-      onClick={() => {
-        onClick();
-        setExerciseId(index);
-      }}
-      src={require("./asset/" + contentTypeMap[contentType] + ".svg")}
-      loading="lazy"
-      className={classes.contentImg}
-    />
-  );
-}
-
 function NavigationComponent({
   index,
   exerciseId,
@@ -118,10 +93,15 @@ function NavigationComponent({
   params,
   exercise,
   progressTrackId,
+  imageRef,
 }) {
   return (
     <>
       <ExerciseImage
+        id={exercise.slug_id}
+        exerciseName={
+          exercise.name || exercise.sub_title || exercise.content_type || "N/A"
+        }
         onClick={() => {
           history.push(
             interpolatePath(PATHS.PATHWAY_COURSE_CONTENT, {
@@ -132,9 +112,11 @@ function NavigationComponent({
           );
         }}
         index={index}
+        imageRef={imageRef}
         selected={exerciseId == index}
         contentType={exercise.content_type}
         setExerciseId={setExerciseId}
+        useSelector
         progressTrackId={progressTrackId}
       />
     </>
@@ -144,8 +126,11 @@ function NavigationComponent({
 function PathwayExercise() {
   const history = useHistory();
   const user = useSelector(({ User }) => User);
+
   const [course, setCourse] = useState([]);
+  const [courseTitle, setCourseTitle] = useState("");
   const [exerciseId, setExerciseId] = useState(0);
+  const [previousExerciseId, setPreviousExerciseId] = useState(-1);
   const classes = useStyles();
   const params = useParams();
   const courseId = params.courseId;
@@ -154,67 +139,158 @@ function PathwayExercise() {
   const [progressTrackId, setProgressTrackId] = useState(-1);
   const [successfulExerciseCompletion, setSuccessfulExerciseCompletion] =
     useState(false);
-  const currentCourse = params.courseId;
+  const [showArrow, setShowArrow] = useState({ left: false, right: true });
+  const scrollRef = React.useRef();
+  const [language, setLanguage] = useState("en");
+  // const [excersiseSlugId, setExerciseSlugId] = useState();
+  // const editor = user.data.user.rolesList.indexOf("admin") > -1;
+
+  const onScroll = () => {
+    const scrollY = scrollRef.current.scrollLeft; //Don't get confused by what's scrolling - It's not the window
+    const scrollTop = scrollRef.current.scrollTop;
+    const maxScrollLeft =
+      scrollRef.current.scrollWidth - scrollRef.current.clientWidth;
+    if (!showArrow.left) {
+      if (scrollY > 0) {
+        setShowArrow((prev) => {
+          return { ...prev, left: true };
+        });
+      }
+    } else if (showArrow.left) {
+      if (scrollY === 0) {
+        setShowArrow((prev) => {
+          return { ...prev, left: false };
+        });
+      }
+    }
+
+    if (showArrow.right) {
+      if (Math.ceil(scrollY) >= maxScrollLeft - 2) {
+        setShowArrow((prev) => {
+          return { ...prev, right: false };
+        });
+      }
+    } else if (!showArrow.right) {
+      if (Math.ceil(scrollY) < maxScrollLeft - 2) {
+        setShowArrow((prev) => {
+          return { ...prev, right: true };
+        });
+      }
+    }
+  };
+
+  const addCompletedExercise = () => {
+    setProgressTrackId({...(progressTrackId || {}), exercises: (progressTrackId?.exercises || []).concat(course[exerciseId].slug_id)});
+  };
+
+  useEffect(() => {
+    // Disable automatic scroll restoration
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    // Reset scroll position on page load
+    window.onload = () => {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 0);
+    };
+
+    // Clean up
+    return () => {
+      window.onload = null; // Remove the onload event handler when the component unmounts
+    };
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("studentAuth") || (user && user?.data?.token)) {
+      return;
+    } else {
+      history.push(PATHS.LOGIN);
+    }
+  }, []);
 
   useEffect(() => {
     setExerciseId(parseInt(params.exerciseId));
     axios({
       method: METHODS.GET,
-      url: `${process.env.REACT_APP_MERAKI_URL}/courses/${courseId}/exercises`,
+      url: `${process.env.REACT_APP_MERAKI_URL}/courses/${courseId}/content/slug?lang=${language}`,
       headers: {
         "version-code": versionCode,
         accept: "application/json",
-        Authorization: user.data?.token || "",
+        Authorization:
+          user.data?.token || localStorage.getItem("studentAuthToken") || "",
       },
     })
       .then((res) => {
-        setCourse(res.data.course.exercises);
-        setAvailableLang(res.data.course.lang_available);
+        setCourse(res?.data?.course?.course_content);
+        setCourseTitle(res?.data?.course?.name);
+        setAvailableLang(res?.data?.course?.lang_available);
+        // setExerciseSlugId(res?.data?.course?.course_content[params.exerciseId]);
       })
       .catch((err) => {
-        console.log("error");
+        console.log(err);
       });
-  }, [currentCourse]);
-  useEffect(() => {
-    axios({
-      method: METHODS.GET,
-      url: `${process.env.REACT_APP_MERAKI_URL}/progressTracking/learningTrackStatus`,
-      headers: {
-        "version-code": versionCode,
-        accept: "application/json",
-        Authorization: user.data?.token || "",
-      },
-    }).then((res) => {
-      const data = res.data.data;
-      const filteredData = data.filter((item) => {
-        if (
-          params.pathwayId == item.pathway_id &&
-          params.courseId == item.course_id
-        ) {
-          return item;
-        }
-      });
+  }, [courseId, language]);
 
-      setProgressTrackId(
-        filteredData[0] ? filteredData[0]?.course_index - 1 : -1
-      );
-    });
-  }, [exerciseId]);
+  useEffect(() => {
+    if(
+      course[previousExerciseId]?.content_type !== "exercise" &&
+      !progressTrackId?.exercises?.includes(course[previousExerciseId]?.slug_id)
+    ) {
+      // fixes #1105: https://github.com/navgurukul/bhanwari-devi/issues/1105
+      // Manually add completed exercises (not assessments) as completed so don't make API
+      //   request in this case or when the exercise has already been marked as completed
+      axios({
+        method: METHODS.GET,
+        url: `${process.env.REACT_APP_MERAKI_URL}/progressTracking/${courseId}/completedContent`,
+        headers: {
+          "version-code": versionCode,
+          accept: "application/json",
+          Authorization:
+            user.data?.token || localStorage.getItem("studentAuthToken") || "",
+        },
+      })
+        .then((res) => {
+          setProgressTrackId(res.data);
+        })
+        .catch((err) => {});
+    }
+    setPreviousExerciseId(exerciseId);
+  }, [exerciseId])
 
   const LangDropDown = () => {
     return availableLang?.length === 1 ? (
-      <MenuItem value={availableLang[0]}>{Lang[availableLang[0]]}</MenuItem>
+      <MenuItem
+        style={{
+          position: "relative",
+          right: "-30px",
+        }}
+        value={availableLang[0]}
+      >
+        {Lang[availableLang[0]]}
+      </MenuItem>
     ) : (
       <Select
+        style={{
+          position: "relative",
+          right: "-30px",
+        }}
         disableUnderline
         value={language}
-        // IconComponent={() => null}
+        IconComponent={() => (
+          <KeyboardArrowDownIcon
+            style={{
+              marginLeft: "-20px",
+            }}
+          />
+        )}
         onChange={(e) => {
           setLanguage(e.target.value);
         }}
         variant="standard"
       >
-        {availableLang.map((lang) => {
+        {availableLang?.map((lang) => {
           return (
             <MenuItem
               style={{ borderRadius: "8px" }}
@@ -254,52 +330,83 @@ function PathwayExercise() {
           pathwayId: params.pathwayId,
         })
       );
-      console.log(progressTrackId);
-      if (parseInt(params.exerciseId) >= progressTrackId) {
-        axios({
-          method: METHODS.POST,
-          url: `${process.env.REACT_APP_MERAKI_URL}/progressTracking/learningTrackStatus`,
-          headers: {
-            "version-code": versionCode,
-            accept: "application/json",
-            Authorization: user.data?.token || "",
-          },
-          data: {
-            pathway_id: params.pathwayId,
-            course_id: params.courseId,
-            course_index: parseInt(params.exerciseId) + 1,
-          },
-        });
-      }
-      setExerciseId(exerciseId + 1);
     } else {
-      if (parseInt(params.exerciseId) >= progressTrackId) {
-        console.log("last exercise");
-
-        axios({
-          method: METHODS.POST,
-          url: `${process.env.REACT_APP_MERAKI_URL}/progressTracking/learningTrackStatus`,
-          headers: {
-            "version-code": versionCode,
-            accept: "application/json",
-            Authorization: user.data?.token || "",
-          },
-          data: {
-            pathway_id: params.pathwayId,
-            course_id: params.courseId,
-            course_index: parseInt(params.exerciseId) + 1,
-          },
+      setSuccessfulExerciseCompletion(true);
+    }
+    if (
+      course[exerciseId].content_type === "exercise" &&
+      !progressTrackId?.exercises?.includes(course[exerciseId].slug_id)
+    ) {
+      axios({
+        method: METHODS.POST,
+        url: `${process.env.REACT_APP_MERAKI_URL}/progressTracking/add/learningTrackStatus`,
+        headers: {
+          "version-code": versionCode,
+          accept: "application/json",
+          Authorization:
+            user.data?.token ||
+            localStorage.getItem("studentAuthToken") ||
+            "",
+        },
+        data: {
+          pathway_id: params.pathwayId,
+          course_id: params.courseId,
+          slug_id: course[exerciseId].slug_id,
+          type: "exercise",
+          lang: language,
+        },
+      }).then((res) => {
+        addCompletedExercise();
+      })
+      addCompletedExercise();
+    }
+    setExerciseId(exerciseId + 1);
+  };
+  const nextArrowClickHandler = () => {
+    if (exerciseId < courseLength - 1) {
+      history.push(
+        interpolatePath(PATHS.PATHWAY_COURSE_CONTENT, {
+          courseId: params.courseId,
+          exerciseId: exerciseId + 1,
+          pathwayId: params.pathwayId,
         })
-          .then((res) => {
-            setExerciseId(exerciseId + 1);
-            setSuccessfulExerciseCompletion(true);
-          })
-          .catch((err) => {});
-      }
+      );
+      setExerciseId(exerciseId + 1);
     }
   };
 
-  const [language, setLanguage] = useState("en");
+  const onChangeHandlerClick = () => {
+    if (
+      course[exerciseId].content_type === "exercise" &&
+      !progressTrackId?.exercises?.includes(course[exerciseId].slug_id)
+    ) {
+      axios({
+        method: METHODS.POST,
+        url: `${process.env.REACT_APP_MERAKI_URL}/exercises/${course[exerciseId].slug_id}/markcomplete`,
+        headers: {
+          "version-code": versionCode,
+          accept: "application/json",
+          Authorization:
+            user.data?.token || localStorage.getItem("studentAuthToken") || "",
+        },
+        params: {
+          lang: language,
+          type: course[exerciseId].content_type,
+        },
+      })
+        .then((res) => {
+          // console.log(res);
+          // add it here in case it gets overwritten as incomplete by a response from `/completedContent` 
+          // that comes in before the request marking it as complete is handled 
+          addCompletedExercise();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+      // add it here so it gets marked as completed before response comes in
+      addCompletedExercise();
+    }
+  };
 
   // to avoid duplication
   function languageSelectMenu() {
@@ -322,10 +429,20 @@ function PathwayExercise() {
       </Select>
     );
   }
+  
+  // const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
+  // const isActiveIpad = useMediaQuery("(max-width:1300px)");
+  // const theme = useTheme();
 
   return (
     <>
-      <AppBar fullWidth position="sticky" color="background" elevation={2}>
+      <AppBar
+        fullWidth
+        // position="sticky"
+        color="background"
+        elevation={2}
+        className={classes.mainHeader}
+      >
         <Container maxWidth>
           <div className="hideInMobile">
             <Toolbar
@@ -335,7 +452,15 @@ function PathwayExercise() {
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6" component="div" pt={1}>
+              <Typography
+                variant="h6"
+                component="div"
+                pt={1}
+                style={{
+                  position: "relative",
+                  left: "-30px",
+                }}
+              >
                 <Link
                   style={{ color: "#6D6D6D" }}
                   to={
@@ -343,6 +468,8 @@ function PathwayExercise() {
                       ? interpolatePath(PATHS.MISCELLANEOUS_COURSE)
                       : params.pathwayId == "residential"
                       ? interpolatePath(PATHS.RESIDENTIAL_COURSE)
+                      : params.pathwayId == "c4caPathway"
+                      ? "/c4ca-pathway"
                       : interpolatePath(PATHS.PATHWAY_COURSE, {
                           pathwayId: params.pathwayId,
                         })
@@ -353,23 +480,21 @@ function PathwayExercise() {
               </Typography>
               <Toolbar>
                 <ArrowBackIosIcon
-                  opacity={`${exerciseId !== 0 ? 1 : 0}`}
-                  sx={{ marginRight: "20px" }}
-                  onClick={previousClickHandler}
+                  opacity={!showArrow.left && 0}
+                  sx={{ marginRight: "20px", cursor: "pointer" }}
+                  onClick={() => {
+                    scrollRef.current.scrollBy({
+                      right: 0,
+                      left: -60,
+                      behavior: "smooth",
+                    });
+                  }}
                 />
-                <div className="gridtopofcourse7">
-                  {exerciseId >
-                  (
-                    <Exercise
-                      course={course}
-                      params={params}
-                      history={history}
-                      exerciseId={exerciseId + 1}
-                      setExerciseId={setExerciseId}
-                      classes={classes}
-                      progressTrackId={progressTrackId}
-                    />
-                  )}
+                <div
+                  onScroll={onScroll}
+                  ref={scrollRef}
+                  className={classes.scrollContainer}
+                >
                   <Exercise
                     course={course}
                     params={params}
@@ -382,9 +507,15 @@ function PathwayExercise() {
                 </div>
 
                 <ArrowForwardIosIcon
-                  opacity={`${exerciseId < courseLength - 1 ? 1 : 0}`}
-                  sx={{ marginLeft: 3 }}
-                  onClick={nextClickHandler}
+                  opacity={!showArrow.right && 0}
+                  sx={{ marginLeft: 3, cursor: "pointer" }}
+                  onClick={() => {
+                    scrollRef.current.scrollBy({
+                      right: 0,
+                      left: 60,
+                      behavior: "smooth",
+                    });
+                  }}
                 />
               </Toolbar>
               <LangDropDown />
@@ -400,6 +531,8 @@ function PathwayExercise() {
                       ? interpolatePath(PATHS.MISCELLANEOUS_COURSE)
                       : params.pathwayId == "residential"
                       ? interpolatePath(PATHS.RESIDENTIAL_COURSE)
+                      : params.pathwayId == "c4caPathway"
+                      ? "/c4ca-pathway"
                       : interpolatePath(PATHS.PATHWAY_COURSE, {
                           pathwayId: params.pathwayId,
                         })
@@ -408,7 +541,6 @@ function PathwayExercise() {
                   <CloseIcon />
                 </Link>
               </Typography>
-
               <LangDropDown />
             </div>
             <Toolbar>
@@ -419,7 +551,7 @@ function PathwayExercise() {
                 }}
               >
                 {course &&
-                  course.map((exercise, index) => {
+                  course?.map((exercise, index) => {
                     return (
                       <>
                         <Link
@@ -433,8 +565,15 @@ function PathwayExercise() {
                           }}
                         >
                           <ExerciseImage
+                            id={exercise.slug_id}
                             selected={exerciseId == index}
-                            contentType={exercise.content_type}
+                            contentType={exercise?.content_type}
+                            exerciseName={
+                              exercise.name ||
+                              exercise.sub_title ||
+                              exercise.content_type ||
+                              "N/A"
+                            }
                             index={index}
                             setExerciseId={setExerciseId}
                             progressTrackId={progressTrackId}
@@ -448,15 +587,73 @@ function PathwayExercise() {
           </div>
         </Container>
       </AppBar>
+      {/* {editor && (
+        <AppBar
+          fullWidth
+          // position="stick"
+          sx={{
+            bgcolor: "info.light",
+          }}
+          // classes={{
+          //  root: isActive ? classes.editingHeaderMobile : classes.editingHeader
+          // }}
+          elevation={2}
+        >
+          <Box>
+            <Container maxWidth>
+              <Toolbar sx={{ alignItems: "center" }}>
+                <Box sx={{ flexGrow: 1 }} />
+                <ModeEditOutlineOutlinedIcon
+                  className={classes.edit}
+                  sx={{ mr: "11px" }}
+                />
+                <Typography className={classes.edit}>
+                  Want to update the content?
+                </Typography>
+                <Button
+                  sx={{ color: "#000000", ml: "24px" }}
+                  className={classes.edit}
+                  onClick={() => {
+                    history.push(
+                      interpolatePath(PATHS.PATHWAY_COURSE_CONTENT_EDIT, {
+                        courseId: params.courseId,
+                        exerciseId: params.exerciseId,
+                        pathwayId: params.pathwayId,
+                      })
+                    );
+                  }}
+                >
+                  Start Editing
+                </Button>
+                <Box sx={{ flexGrow: 1 }} />
+              </Toolbar>
+            </Container>
+          </Box>
+        </AppBar>
+      )} */}
       {successfulExerciseCompletion ? (
         <CompletionComponent
           setSuccessfulExerciseCompletion={setSuccessfulExerciseCompletion}
         />
       ) : (
-        <ExerciseContent exerciseId={exerciseId} lang={language} />
+        // <Box sx={{ marginTop: "120px" }}>
+        <Box sx={{ marginTop: "50px" }}>
+          {/* <PythonProvider> */}
+          <ExerciseContent
+            contentList={course}
+            courseTitle={courseTitle}
+            exerciseId={exerciseId}
+            key={exerciseId}
+            lang={language}
+            setExerciseId={setExerciseId}
+            setProgressTrackId={setProgressTrackId}
+            progressTrackId={progressTrackId}
+          />
+          {/* </PythonProvider> */}
+        </Box>
       )}
       <Box>
-        <Toolbar className={classes.bottomRow}>
+        <Toolbar className={classes.bottomRow} sx={{ width: "100%" }}>
           <Button
             variant="text"
             color="dark"
@@ -471,14 +668,31 @@ function PathwayExercise() {
             Back
           </Button>
           <Button
-            style={{
-              opacity: `${exerciseId < courseLength ? 1 : 0}`,
+            // sx={(theme) => (console.log("THEME", theme.breakpoints) || { 
+            //   opacity: `${exerciseId < courseLength ? 1 : 0}`,
+            //   position: "relative",
+            //   // right: "-10px",
+            //   //marginRight: { [breakpoints.tb]: "40px", xs: "" },
+            //   // marginRight: { xs: 0, md: "40px" },
+            //   marginRight: theme?.breakpoints?.values?.ipad 
+            //   // marginRight: !isActive && !isActiveIpad ? "40px" : "",
+            // })}
+            sx = {{
+               opacity: `${exerciseId < courseLength ? 1 : 0}`,
+               position: "relative",
+               // iPad was used here before with 1300px instead of 1200px 
+               //   default
+               // marginRight: {xs: 0, ipad: "40px", lg: "40px"}
+               marginRight: {xs: 0, md: "40px"}
             }}
             endIcon={<ArrowForwardIosIcon />}
             disabled={!(exerciseId < courseLength)}
             variant="text"
             color="primary"
-            onClick={nextClickHandler}
+            onClick={() => {
+              nextClickHandler();
+              onChangeHandlerClick();
+            }}
           >
             Next
           </Button>

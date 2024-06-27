@@ -10,6 +10,7 @@ import CircleIcon from "@mui/icons-material/Circle";
 import { getCourseContent } from "../../../components/Course/redux/api";
 // import { actions as courseActions } from "../../../components/Course/redux/action";
 import { actions as enrolledBatchesActions } from "../../PathwayCourse/redux/action";
+import { breakpoints } from "../../../theme/constant";
 
 import Assessment from "../ExerciseContent/Assessment";
 import {
@@ -24,10 +25,11 @@ import {
   Box,
   Button,
   Grid,
+  useMediaQuery,
 } from "@mui/material";
 
 // import HiddenContent from "../HiddenContent";
-import { versionCode } from "../../../constant";
+import { INDENT, versionCode, CODE_EDITOR_FIELDS } from "../../../constant";
 
 import useStyles from "../styles";
 import ExerciseBatchClass from "../../BatchClassComponents/ExerciseBatchClass/ExerciseBatchClass";
@@ -35,27 +37,14 @@ import CourseEnroll from "../../BatchClassComponents/EnrollInCourse/EnrollInCour
 import DoubtClassExerciseComponent from "../../BatchClassComponents/DoubtClassExerciseComponent";
 import RevisionClassEnroll from "../../BatchClassComponents/Revision/RevisionClassEnroll";
 import { actions as upcomingBatchesActions } from "../..//PathwayCourse/redux/action";
-import { actions as upcomingClassActions } from "../../PathwayCourse/redux/action";
+// import { actions as upcomingClassActions } from "../../PathwayCourse/redux/action";
 import ClassTopic from "../ClassTopic/ClassTopic";
-// import { Container, Box, Typography, Button, Grid } from "@mui/material";
-import languageMap from "../../../pages/CourseContent/languageMap";
 import ExerciseContentLoading from "./ExerciseContentLoading";
-const createVisulizeURL = (code, lang, mode) => {
-  // only support two languages for now
-  const l = lang == "python" ? "2" : "js";
-  const replacedCode = code && code.replace(/<br>/g, "\n");
-  const visualizerCode = replacedCode.replace(/&emsp;/g, " ");
-  const url = `http://pythontutor.com/visualize.html#code=${encodeURIComponent(
-    visualizerCode
-  )
-    .replace(/%2C|%2F/g, decodeURIComponent)
-    .replace(/\(/g, "%28")
-    .replace(
-      /\)/g,
-      "%29"
-    )}&cumulative=false&curInstr=0&heapPrimitives=nevernest&mode=${mode}&origin=opt-frontend.js&py=${l}&rawInputLstJSON=%5B%5D&textReferences=false`;
-  return url;
-};
+import PersistentDrawerLeft from "./Drawers/Drawer";
+import MobileDrawer from "./Drawers/MobileDrawer";
+import ContentListText from "./Drawers/ContentListText";
+import PythonEditor from "../../CodeEditor/PythonEditor";
+import { usePython } from "../../CodeEditor/react-py";
 
 function UnsafeHTML(props) {
   const { html, Container, ...otherProps } = props;
@@ -75,7 +64,7 @@ const headingVarients = {};
     (headingVarients[index + 1] = (data) => (
       <UnsafeHTML
         Container={Name}
-        className="heading"
+        // className={classes.heading}
         html={data}
         {...(index === 0 ? { component: "h1", variant: "h6" } : {})}
       />
@@ -86,7 +75,10 @@ const headingVarients = {};
       // />
     ))
 );
+
 const RenderDoubtClass = ({ data, exercise }) => {
+  const params = useParams();
+  const pathwayId = params.pathwayId;
   const classes = useStyles();
   if (data?.component === "banner") {
     const value = data.value;
@@ -97,7 +89,6 @@ const RenderDoubtClass = ({ data, exercise }) => {
         {start_time && end_time && (
           <>
             <DoubtClassExerciseComponent value={value} actions={actions} />
-
             <div
               style={{
                 borderBottom: "1px solid #BDBDBD",
@@ -112,30 +103,103 @@ const RenderDoubtClass = ({ data, exercise }) => {
   return null;
 };
 
-const RenderContent = ({ data, exercise }) => {
+const RenderContent = ({ data, exercise, pathwayData, pythonRunner }) => {
   const classes = useStyles();
+  // const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
+  const playerRef = useRef(null);
+
+  const videoId = data.value.includes("=")
+    ? data.value.split("=")[1]
+    : data.value;
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [allowedTime, setAllowedTime] = useState(0);
+
+  const onReady = (event) => {
+    playerRef.current = event.target;
+  };
+
+  const onStateChange = (event) => {
+    if (event.data === window.YT.PlayerState.PLAYING) {
+      setIsPlaying(true);
+    } else {
+      setIsPlaying(false);
+    }
+  };
+
+  useEffect(() => {
+    let intervalId;
+
+    if (isPlaying) {
+      intervalId = setInterval(() => {
+        if (playerRef.current) {
+          const currentTime = playerRef.current.getCurrentTime();
+          if (currentTime > allowedTime + 5) {
+            // Allow a 5-second buffer
+            playerRef.current.seekTo(allowedTime);
+          } else {
+            setAllowedTime(currentTime);
+          }
+        }
+      }, 1000);
+    } else if (intervalId) {
+      clearInterval(intervalId);
+    }
+
+    return () => clearInterval(intervalId);
+  }, [isPlaying, allowedTime]);
+
+  const opts = {
+    height: "390",
+    width: "640",
+    playerVars: {
+      controls: 1, // Disable default controls
+      disablekb: 1, // Disable keyboard controls
+    },
+  };
+
+  // console.log(isVideoFinished, "isVideoFinished")
   if (data.component === "header") {
-    return headingVarients[data.variant](
-      DOMPurify.sanitize(get(data, "value"))
+    return (
+      <Box className={classes.heading}>
+        {headingVarients[data.variant](DOMPurify.sanitize(get(data, "value")))}
+      </Box>
     );
   }
   if (data.component === "image") {
     return (
-      <img className={classes.contentImage} src={data.value} alt="content" />
+      <>
+        <Box className={classes.contentImageBox}>
+          <img
+            className={classes.contentImage}
+            src={data.value}
+            alt="content"
+          />
+        </Box>
+      </>
     );
   }
   if (data.component === "youtube") {
     const videoId = data.value.includes("=")
       ? data.value.split("=")[1]
       : data.value;
-    return <YouTube className={classes.youtubeVideo} videoId={videoId} />;
+    return pathwayData?.code !== "TCBPI" ? (
+      <YouTube className={classes.youtubeVideo} videoId={videoId} />
+    ) : (
+      <YouTube
+        videoId={videoId}
+        opts={opts}
+        onReady={onReady}
+        onStateChange={onStateChange}
+      />
+    );
   }
   if (data.component === "text") {
     const text = DOMPurify.sanitize(get(data, "value"));
     if (data.decoration && data.decoration.type === "bullet") {
       return (
         <Box className={classes.List}>
-          <CircleIcon sx={{ pr: 2, width: "7px" }} />
+          <CircleIcon sx={{ pr: "12px", width: "7px" }} />
           <Typography
             variant="body1"
             dangerouslySetInnerHTML={{ __html: text }}
@@ -148,9 +212,9 @@ const RenderContent = ({ data, exercise }) => {
         <Box className={classes.List}>
           <Typography
             variant="body1"
-            sx={{ pr: 1 }}
+            sx={{ pr: "3px" }}
             className={classes.contentNumber}
-            dangerouslySetInnerHTML={{ __html: data.decoration.value }}
+            dangerouslySetInnerHTML={{ __html: data.decoration.value + "." }}
           />
           <Typography
             variant="body1"
@@ -162,9 +226,7 @@ const RenderContent = ({ data, exercise }) => {
     } else {
       return (
         <Typography
-          style={{
-            margin: "2rem 0",
-          }}
+          sx={{ margin: "8px 0" }}
           variant="body1"
           dangerouslySetInnerHTML={{ __html: text }}
         />
@@ -178,17 +240,19 @@ const RenderContent = ({ data, exercise }) => {
     );
     return (
       <TableContainer>
-        <Table stickyHeader>
+        <Table>
           <TableHead>
-            <TableRow>
-              {data.value.map((item) => {
+            <TableRow
+              sx={{
+                position: "sticky",
+              }}
+            >
+              {data.value.map((item, idx) => {
                 const header = DOMPurify.sanitize(item.header);
                 return (
                   <TableCell
-                    style={{
-                      fontWeight: "bold",
-                    }}
-                    sx={{ background: "#F5F5F5" }}
+                    key={idx}
+                    sx={{ background: "#F5F5F5", fontWeight: "bold" }}
                     className={classes.tableHead}
                     dangerouslySetInnerHTML={{ __html: header }}
                   />
@@ -197,13 +261,18 @@ const RenderContent = ({ data, exercise }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dataInCol.map((item) => {
+            {dataInCol.map((item, index) => {
               return (
-                <TableRow className={classes.tableHead} hover={false}>
-                  {item.map((row) => {
+                <TableRow
+                  key={index}
+                  className={classes.tableHead}
+                  hover={false}
+                >
+                  {item.map((row, idx) => {
                     const rowData = DOMPurify.sanitize(row);
                     return (
                       <TableCell
+                        key={idx}
                         className={classes.tableHead}
                         dangerouslySetInnerHTML={{ __html: rowData }}
                       />
@@ -218,8 +287,9 @@ const RenderContent = ({ data, exercise }) => {
     );
   }
 
-  if (data.component === "code") {
+  if (data.component === "code" && data.type !== "python") {
     const codeContent = DOMPurify.sanitize(get(data, "value"));
+
     return (
       <div>
         <Box className={classes.codeBackground}>
@@ -233,24 +303,29 @@ const RenderContent = ({ data, exercise }) => {
             <Typography variant="subtitle1">Code Example</Typography>
           </Box>
           {/* </Toolbar> */}
+
           <Typography
             className={classes.codeWrap}
             dangerouslySetInnerHTML={{
               __html: codeContent,
             }}
           />
-          <Grid container justifyContent="flex-end" mt={2}>
-            <Button
-              variant="contained"
-              color="dark"
-              target="_blank"
-              href={createVisulizeURL(get(data, "value"), data.type, "display")}
-            >
-              Visualize
-            </Button>
-          </Grid>
         </Box>
       </div>
+    );
+  }
+
+  if (data.component === "code" && data.type === "python") {
+    const pythonCode = data.value
+      .replace(/<br>/g, "\n")
+      .replace(/&emsp;/g, " ".repeat(INDENT));
+    return (
+      <PythonEditor
+        initialCodeEditorValue={pythonCode}
+        disableEditing={data[CODE_EDITOR_FIELDS.IS_NOT_EDITABLE]}
+        disableRun={data[CODE_EDITOR_FIELDS.IS_NOT_EXECUTABLE]}
+        pythonRunner={pythonRunner}
+      />
     );
   }
   // if (data.type === "solution") {
@@ -266,7 +341,16 @@ const RenderContent = ({ data, exercise }) => {
   return "";
 };
 
-function ExerciseContent({ exerciseId, lang }) {
+function ExerciseContent({
+  exerciseId,
+  lang,
+  contentList,
+  setExerciseId,
+  setProgressTrackId,
+  courseTitle,
+  progressTrackId,
+}) {
+  // const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
   const user = useSelector(({ User }) => User);
   const [content, setContent] = useState([]);
   const [course, setCourse] = useState();
@@ -279,15 +363,39 @@ function ExerciseContent({ exerciseId, lang }) {
   const [courseData, setCourseData] = useState({ content_type: null });
   const [cashedData, setCashedData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openMobile, setOpenMobile] = useState(false);
+  const [assessmentResult, setAssessmentResult] = useState(null);
+  const [triger, setTriger] = useState(false);
+  const [pathwayName, setPathwayName] = useState([]);
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (cashedData?.length > 0) {
       setLoading(false);
     }
   }, [cashedData]);
-  // const upcomingBatchesData = useSelector((state) => {
-  //   return state.Pathways?.upcomingBatches?.data;
-  // });
+  const upcomingBatchesData = useSelector((state) => {
+    return state.Pathways?.upcomingBatches?.data;
+  });
+
+  useEffect(() => {
+    axios({
+      method: METHODS.GET,
+      url: `${process.env.REACT_APP_MERAKI_URL}/pathways/names`,
+      headers: {
+        accept: "application/json",
+        Authorization: user.data.token,
+      },
+    })
+      .then((res) => {
+        setPathwayName(res.data);
+      })
+      .catch((err) => {});
+  }, []);
+
+  const pathwayData = pathwayName.find((item) => {
+    return item.id == pathwayId;
+  });
 
   // const userEnrolledClasses = useSelector((state) => {
   //   return state.Pathways?.upcomingEnrolledClasses?.data;
@@ -295,28 +403,57 @@ function ExerciseContent({ exerciseId, lang }) {
 
   const reloadContent = () => {
     getCourseContent({ courseId, lang, versionCode, user }).then((res) => {
-      setCourse(res.data.course.name);
-      setExercise(res.data.course.exercises[exerciseId]);
-      setContent(res.data.course.exercises[exerciseId]?.content);
-      setCourseData(res.data.course.exercises[exerciseId]);
-      setCashedData(res.data.course.exercises);
+      setExercise(res.data.course?.course_content[exerciseId]);
+      setContent(res.data.course?.course_content[exerciseId].content);
+      setCourseData(res.data.course?.course_content[exerciseId]);
+      setCashedData(res.data.course?.course_content);
     });
   };
 
   useEffect(() => {
     getCourseContent({ courseId, lang, versionCode, user }).then((res) => {
-      setCourse(res.data.course.name);
-      setExercise(res.data.course.exercises[params.exerciseId]);
-      setContent(res.data.course.exercises[params.exerciseId]?.content);
-      setCourseData(res.data.course.exercises[params.exerciseId]);
-      setCashedData(res.data.course.exercises);
+      setCourse(res?.data?.course.name);
+      setExercise(res?.data?.course?.course_content?.[params.exerciseId]);
+      setContent(
+        res?.data?.course?.course_content?.[params.exerciseId]?.content
+      );
+      setCourseData(res?.data?.course?.course_content?.[params.exerciseId]);
+      setCashedData(res?.data?.course?.course_content);
     });
-  }, [courseId, lang]);
+  }, [courseId, lang, triger, user]);
+
   useEffect(() => {
     setExercise(cashedData?.[params.exerciseId]);
     setContent(cashedData?.[params.exerciseId]?.content);
+
     setCourseData(cashedData?.[params.exerciseId]);
   }, [params.exerciseId]);
+
+  useEffect(() => {
+    if (exercise?.content_type === "assessment") {
+      axios({
+        method: METHODS.GET,
+        url: `${process.env.REACT_APP_MERAKI_URL}/assessment/${exercise?.slug_id}/complete`,
+        // url: `${process.env.REACT_APP_MERAKI_URL}/assessment/${exercise?.id}/student/result/v2`,
+        headers: {
+          accept: "application/json",
+          Authorization:
+            user?.data?.token || localStorage.getItem("studentAuthToken"),
+        },
+      }).then((res) => {
+        const keyToModify = "selected_option";
+        const newValue = res?.data?.selected_option;
+        const modifiedObject = {
+          ...res,
+          data: {
+            ...res.data,
+            [keyToModify]: newValue,
+          },
+        };
+        setAssessmentResult(modifiedObject.data); // passing this after parsing the data.
+      });
+    }
+  }, [triger, exerciseId, exercise]);
 
   const enrolledBatches = useSelector((state) => {
     if (state?.Pathways?.enrolledBatches?.data?.length > 0) {
@@ -325,9 +462,15 @@ function ExerciseContent({ exerciseId, lang }) {
       return null;
     }
   });
+
   useEffect(() => {
     // getupcomingEnrolledClasses
-    if (user?.data?.token) {
+    if (
+      user?.data?.token &&
+      pathwayId !== "miscellaneous" &&
+      pathwayId !== "residential" &&
+      pathwayId !== "c4caPathway"
+    ) {
       dispatch(
         enrolledBatchesActions.getEnrolledBatches({
           pathwayId: pathwayId,
@@ -340,18 +483,27 @@ function ExerciseContent({ exerciseId, lang }) {
           authToken: user?.data?.token,
         })
       );
-      // dispatch(
-      //   upcomingClassActions.getupcomingEnrolledClasses({
-      //     pathwayId: pathwayId,
-      //     authToken: user?.data?.token,
-      //   })
-      // );
     }
   }, [params.pathwayId]);
 
   function ExerciseContentMain() {
+    const [selected, setSelected] = useState(params.exerciseId);
+    const desktop = useMediaQuery("(min-width: 900px)");
+    const pythonRunner = usePython();
+    // const [pythonRunner, setPythonRunner] = useState(null);
+
+    /*
+    useEffect(() => {
+      if (!pythonRunner && content?.find(contentItem => contentItem.component === "code" && contentItem.type === "python")) {
+        // only load Pyodide when there's a Python code component
+        setPythonRunner(usePython());
+      }
+    }, [content, pythonRunner]);
+    */
+    
     return (
       <Container maxWidth="lg">
+        {!desktop && <ContentListText setOpenDrawer={setOpenMobile} />}
         <Grid container justifyContent={"center"}>
           <Grid xs={0} item>
             <Box sx={{ m: "32px 0px" }}>
@@ -361,6 +513,7 @@ function ExerciseContent({ exerciseId, lang }) {
               </Box>
             </Box>
           </Grid>
+
           <Grid
             style={{
               display: showJoinClass ? "block" : "none",
@@ -385,7 +538,29 @@ function ExerciseContent({ exerciseId, lang }) {
             )}
           </Grid>
         </Grid>
-        <Container maxWidth="sm">
+
+        <Container
+          // style={{ maxWidth: !isActive && "700px" }}
+          maxWidth="sm"
+        >
+          {desktop ? (
+            <PersistentDrawerLeft
+              setSelected={setSelected}
+              list={contentList}
+              courseTitle={courseTitle}
+              setExerciseId={setExerciseId}
+              progressTrackId={progressTrackId}
+            />
+          ) : (
+            <MobileDrawer
+              open={openMobile}
+              setOpen={setOpenMobile}
+              setSelected={setSelected}
+              list={contentList}
+              setExerciseId={setExerciseId}
+              progressTrackId={progressTrackId}
+            />
+          )}
           {content &&
             content.map((contentItem, index) => (
               <RenderDoubtClass
@@ -399,23 +574,36 @@ function ExerciseContent({ exerciseId, lang }) {
           {exercise && exercise.content_type === "exercise" && (
             <Box sx={{ m: "32px 0px" }}>
               {/* <Typography variant="h5">{course}</Typography> */}
-              <Typography variant="h6" sx={{ mt: "16px" }}>
+              {/* <Typography variant="h6" sx={{ mt: "16px" }}>
                 {exercise && exercise.name}
-              </Typography>
+              </Typography> */}
               <Box sx={{ mt: 5, mb: 8 }}>
                 {content &&
                   content.map((contentItem, index) => (
                     <RenderContent
+                      pythonRunner={pythonRunner} 
                       data={contentItem}
                       key={index}
                       classes={classes}
+                      pathwayData={pathwayData}
                     />
                   ))}
               </Box>
             </Box>
           )}
           {exercise && exercise.content_type === "assessment" && (
-            <Assessment data={content} exerciseId={exercise.id} />
+            <Assessment
+              triger={triger}
+              setTriger={setTriger}
+              res={assessmentResult}
+              data={content}
+              // exerciseId={exercise.id}
+              exerciseSlugId={exercise.slug_id}
+              courseData={courseData}
+              setCourseData={setCourseData}
+              setProgressTrackId={setProgressTrackId}
+              lang={lang}
+            />
           )}
         </Container>
       </Container>

@@ -6,11 +6,8 @@ import Home from "../pages/Home";
 import { PATHS } from "../constant";
 import Login from "../pages/Login";
 import CreateClass from "../pages/CreateClass";
-// import Course from "../pages/Course";
-import CourseContent from "../pages/CourseContent";
 import Mentor from "../pages/Mentor";
 import User from "../components/User";
-
 import PrivacyPolicy from "../components/PrivacyPolicy";
 import PartnerData from "../components/Dashboard/PartnerData";
 import StudentData from "../components/Dashboard/StudentData";
@@ -19,7 +16,7 @@ import Profile from "../pages/Profile";
 import Opportunities from "../pages/Opportunities";
 import AFEpage from "../components/AFEpage";
 import NavgurukulIntroduce from "../pages/Navgurukul";
-import Admission from "../pages/Navgurukul/merakiAdmission";
+// import Admission from "../pages/Navgurukul/merakiAdmission";
 import RedirectComponent from "../components/common/RedirectComponent";
 import VolunteerDashboard from "../components/VolunteerDashbord/VolunteerDetails";
 import VolunteerOverview from "../components/VolunteerDashbord/IndividualVolunteers";
@@ -36,15 +33,20 @@ import SearchCourse from "../components/SearchBar";
 import ReturningUserPage from "../components/ReturningUser/ReturningUserPage";
 import VolunteerAutomation from "../components/VolunteerAutomation";
 import VolunteerForm from "../components/VolunteerAutomation/Stepper";
+import ClassCard from "../components/Class/ClassCard";
+import AmazonVideos from "../components/PathwayCourse/AmazonCodingProgrammer/AmazonVideos";
+// import ClassFormModel from "../components/BatchClassComponents/ClassFormModel";
+import GsocIdea from "../pages/GsocIdea/GsocIdea";
+import C4CApathway from "../components/PathwayCourse/C4CApathway";
+// import Credits from "../pages/Credits";
 
 const Routing = () => {
   return (
     <>
-      {/* <ThemeProvider theme={theme}> */}
       {/* Public routes */}
       {/* Route home page to login in  */}
       <Route exact path={PATHS.HOME_PATH} component={Home} />
-      {/* <Route exact path={PATHS.COURSE} component={Course} /> */}
+      <Route exact path={PATHS.HOME_PAGE} component={Home} />
       <Route exact path={PATHS.PATHWAY_COURSE} component={PathwayCourse} />
       <Route
         exact
@@ -56,30 +58,18 @@ const Routing = () => {
         path={PATHS.RESIDENTIAL_COURSE}
         component={ResidentialCourse}
       />
-      <Route path={PATHS.COURSE_CONTENT} component={CourseContent} />
-      <PrivateRoute
-        path={PATHS.PATHWAY_COURSE_CONTENT}
-        component={PathwayExercise}
-      />
+      <Route path={PATHS.PATHWAY_COURSE_CONTENT} component={PathwayExercise} />
+
       <Route exact path={PATHS.LOGIN} component={Login} />
       <Route exact path={PATHS.PRIVACY_POLICY} component={PrivacyPolicy} />
       <Route exact path={PATHS.AFE} component={AFEpage} />
       <Route exact path={PATHS.OPPORTUNITIES} component={Opportunities} />
       <Route exact path={PATHS.TEAM} component={Team} />
+      {/* <Route exact path={PATHS.CREDITS} component={Credits} /> */}
 
       <Route exact path={PATHS.OUR_PARTNER} component={Partner} />
       <Route exact path={PATHS.OUR_STORY} component={OurStory} />
-      <PrivateRoute
-        exact
-        path={PATHS.NEW_USER_DASHBOARED}
-        component={NewUserDashbord}
-      />
-      {/* <Route
-        exact
-        path={PATHS.PYTHON_COURSE}
-        component={PythonCourse}
-      /> */}
-
+      <Route exact path={PATHS.C4CA_PATHWAY} component={C4CApathway} />
       <Route
         exact
         path={PATHS.RETURNING_USER_PAGE}
@@ -91,33 +81,42 @@ const Routing = () => {
         path={PATHS.NAVGURUKUL_INTRODUCE}
         component={NavgurukulIntroduce}
       />
+
       <Route exact path={PATHS.REDIRECT} component={RedirectComponent} />
-      <PrivateRoute exact path={PATHS.ADMISSION} component={Admission} />
       <Route exact path={PATHS.SEARCHED_COURSE} component={SearchCourse} />
       <Route
         exact
         path={PATHS.VOLUNTEER_AUTOMATION}
         component={VolunteerAutomation}
       />
+      <Route exact path={PATHS.GSOC_IDEA} component={GsocIdea} />
+
+      {/* Private routes */}
+
+      <PrivateRoute exact path={PATHS.VIDEOS} component={AmazonVideos} />
 
       <PrivateRoute
         exact
         path={PATHS.VOLUNTEER_FORM}
         component={VolunteerForm}
       />
-
-      {/* Private routes */}
       {/* <PrivateRoute
+        path={PATHS.PATHWAY_COURSE_CONTENT}
+        component={PathwayExercise}
+      /> */}
+      <PrivateRoute
         exact
-        path={ PATHS.CLASS }
-        component={ Class }
-      />*/}
+        path={PATHS.NEW_USER_DASHBOARD}
+        component={NewUserDashbord}
+      />
+      {/* <PrivateRoute exact path={PATHS.ADMISSION} component={Admission} /> */}
       <PrivateRoute
         exact
         path={PATHS.STATEPARTNER}
         component={StatePartnerDashboard}
       />
       <PrivateRoute exact path={PATHS.PROFILE} component={Profile} />
+      <PrivateRoute exact path={PATHS.ME} component={Profile} />
       <PrivateRoute
         exact
         path={PATHS.VOLUNTEER}
@@ -130,12 +129,12 @@ const Routing = () => {
       />
 
       <PrivateRoute exact path={PATHS.CLASS} component={CreateClass} />
+      <PrivateRoute exact path={PATHS.BATCH_CLASSES} component={ClassCard} />
       <PrivateRoute exact path={PATHS.USER} component={User} />
       <PrivateRoute exact path={PATHS.MENTOR} component={Mentor} />
       <PrivateRoute exact path={PATHS.PARTNERS} component={PartnerData} />
       <PrivateRoute exact path={PATHS.PARTNER_DATA} component={StudentData} />
       <PrivateRoute exact path={PATHS.STUDENT} component={StudentClassData} />
-      {/* </ThemeProvider> */}
     </>
   );
 };

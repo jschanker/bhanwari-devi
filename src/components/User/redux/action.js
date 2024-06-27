@@ -2,8 +2,13 @@ export const types = {
   ON_USER_SIGN_INTENT: "ON_USER_SIGN_INTENT",
   ON_USER_SIGN_INTENT_RESOLVED: "ON_USER_SIGN_INTENT_RESOLVED",
   ON_USER_SIGN_INTENT_REJECTED: "ON_USER_SIGN_INTENT_REJECTED",
+  ON_USER_UPDATE: "ON_USER_UPDATE",
+  ON_USER_REFRESH_DATA_INTENT: "ON_USER_REFRESH_DATA_INTENT",
+  ON_USER_REFRESH_DATA_SUCCESS: "ON_USER_REFRESH_DATA_RESOLVED",
+  ON_USER_REFRESH_DATA_FAILURE: "ON_USER_REFRESH_DATA_FAILURE",
 
   ON_LOGOUT_INTENT: "ON_LOGOUT_INTENT",
+  ON_USER_LOGIN_INTENT: " ON_USER_LOGIN_INTENT",
 };
 
 export const actions = {
@@ -31,10 +36,34 @@ export const actions = {
       error,
     };
   },
+  onUserRefreshDataIntent(data) {
+    return {
+      type: types.ON_USER_REFRESH_DATA_INTENT,
+      data,
+    };
+  },
+  onUserRefreshDataSuccess(data) {
+    return {
+      type: types.ON_USER_REFRESH_DATA_SUCCESS,
+      data,
+    };
+  },
+  onUserRefreshDataFailure(error) {
+    return {
+      type: types.ON_USER_REFRESH_DATA_FAILURE,
+      error,
+    };
+  },
 
   logout() {
     return {
       type: types.ON_LOGOUT_INTENT,
+    };
+  },
+  onUserLogin(data) {
+    return {
+      type: types.ON_USER_LOGIN_INTENT,
+      data,
     };
   },
 };

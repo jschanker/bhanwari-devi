@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { breakpoints } from "../../../theme/constant";
 import Chip from "@mui/material/Chip";
+import CircleIcon from "@mui/icons-material/Circle";
 import {
   Container,
   Box,
@@ -17,25 +18,19 @@ import { format } from "../../../common/date";
 import { getCourseContent } from "../../Course/redux/api";
 import { useSelector } from "react-redux";
 import { versionCode } from "../../../constant";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
 import useStyles from "../styles";
-const PathwayCards = (props) => {
-  // const language = {
-  //   hi: "Hindi",
-  //   en: "English",
-  //   mr: "Marathi",
-  // };
-
-  // const language ;
-
+const PathwayCards = ({ userEnrolledClasses, data }) => {
+  const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
   const history = useHistory();
   const language = {
     hi: "Hindi",
     en: "English",
     mr: "Marathi",
   };
-  const { userEnrolledClasses, data } = props;
-  console.log(userEnrolledClasses);
+
+  const sliceNumber = data?.code === "ACB" ? 1 : 3;
 
   function UpcomingClassCardComponent({ item }) {
     const classes = useStyles();
@@ -43,108 +38,152 @@ const PathwayCards = (props) => {
       "(max-width:" + breakpoints.values.sm + "px)"
     );
     const user = useSelector(({ User }) => User);
+
     const [classIndex, setClassIndex] = React.useState(0);
     useEffect(() => {
       const courseId = item.course_id;
       getCourseContent({ courseId, versionCode, user }).then((res) => {
-        const index = res.data.course.exercises.findIndex(
-          (ex) => ex.id === item.exercise_id
+        const index = res.data.course.course_content.findIndex(
+          (ex) => ex.id === item.id
         );
 
-        setClassIndex(index + 1);
+        setClassIndex(index);
       });
     }, []);
-    return (
-      <Grid item xs={12} sm={4} md={4}>
-        <Card
-          className={classes.UpcomingCard}
-          elevation={2}
-          onClick={() => {
-            console.log("clicked");
-            history.push(
-              interpolatePath(PATHS.PATHWAY_COURSE_CONTENT, {
-                courseId: item.course_id,
-                exerciseId: classIndex,
-                pathwayId: item.pathway_id,
-              })
-            );
-          }}
-          style={{
-            minWidth: isActive ? "290px" : "350",
-            marginRight: isActive ? "500px" : "40px",
-          }}
-        >
-          <Box
-            sx={{
-              borderTop: 5,
-              color:
-                item.type === "batch" ||
-                item.type === "revision" ||
-                item.type === "cohort"
-                  ? "primary.main"
-                  : "secondary.main",
-            }}
-          />
 
-          <CardContent>
-            <Stack
-              direction="row"
-              justifyContent="space-between"
-              className={classes.cardContent}
-            >
-              <Typography variant="body1" gutterBottom>
-                {item.sub_title || item.title}
-              </Typography>
-              <Chip
-                label={item.type}
-                variant="caption"
-                sx={
+    return (
+      <Grid item xs={12} sm={6} md={item.code === "ACB" ? 12 : 4}>
+        <Link
+          style={{
+            textDecoration: "none",
+          }}
+          to={interpolatePath(PATHS.PATHWAY_COURSE_CONTENT, {
+            courseId: item.course_id,
+            exerciseId: classIndex,
+            pathwayId: item.pathway_id,
+          })}
+        >
+          <Card
+            className={classes.UpcomingCard}
+            elevation={2}
+            // onClick={() => {
+            //   history.push(
+            //     interpolatePath(PATHS.PATHWAY_COURSE_CONTENT, {
+            //       courseId: item.course_id,
+            //       exerciseId: classIndex,
+            //       pathwayId: item.pathway_id,
+            //     })
+            //   );
+            // }}
+            style={
+              item.pathway_id === 7
+                ? {
+                    // minWidth: isActive ? "95%" : "350",
+                    marginRight: isActive ? "500px" : "130px",
+                    marginLeft: isActive ? "5px" : "15px",
+                  }
+                : {
+                    minWidth: isActive ? "95%" : "350",
+                    marginRight: isActive ? "500px" : "40px",
+                    marginLeft: isActive ? "5px" : "15px",
+                  }
+            }
+          >
+            <Box
+              sx={{
+                borderTop: 5,
+                color:
                   item.type === "batch" ||
                   item.type === "revision" ||
                   item.type === "cohort"
-                    ? {
-                        borderRadius: { xs: 25, sm: 15 },
-                        height: { xs: 34, sm: 25 },
-                        backgroundColor: "primary.light",
-                        color: "primary.dark",
-                        "&:hover": {
+                    ? "primary.main"
+                    : "secondary.main",
+              }}
+            />
+
+            <CardContent>
+              <Stack
+                direction="row"
+                justifyContent="space-between"
+                className={classes.cardContent}
+              >
+                <Typography variant="body1" gutterBottom>
+                  {item.sub_title || item.title}
+                </Typography>
+                <Chip
+                  label={item.type}
+                  variant="caption"
+                  sx={
+                    item.type === "batch" ||
+                    item.type === "revision" ||
+                    item.type === "cohort"
+                      ? {
+                          borderRadius: { xs: 25, sm: 15 },
+                          height: { xs: 34, sm: 25 },
                           backgroundColor: "primary.light",
                           color: "primary.dark",
                           "&:hover": {
                             backgroundColor: "primary.light",
+                            color: "primary.dark",
+                            "&:hover": {
+                              backgroundColor: "primary.light",
+                            },
                           },
-                        },
-                      }
-                    : {
-                        borderRadius: { xs: 25, sm: 15 },
-                        height: { xs: 34, sm: 25 },
-                        // fontSize: "11px",
-                        backgroundColor: "secondary.light",
-                        color: "secondary.dark",
-                      }
-                }
-              />
-            </Stack>
-            <Grid container spacing={1}>
-              <Grid item xs={2} md={3}>
-                <Typography variant="body2">
-                  {format(item.start_time, "dd MMM yy")}
-                </Typography>
+                        }
+                      : {
+                          borderRadius: { xs: 25, sm: 15 },
+                          height: { xs: 34, sm: 25 },
+                          // fontSize: "11px",
+                          backgroundColor: "secondary.light",
+                          color: "secondary.dark",
+                        }
+                  }
+                />
+              </Stack>
+              <Grid container spacing={1}>
+                <Grid item xs={4} md={3}>
+                  <Typography
+                    style={{ color: "#6D6D6D", fontSize: "13px" }}
+                    variant="body2"
+                  >
+                    {format(item.start_time, "dd MMM yy")}
+                  </Typography>
+                </Grid>
+                <CircleIcon
+                  style={{
+                    color: "#6D6D6D",
+                    width: "4px",
+                    height: "4px",
+                    marginTop: "16px",
+                    left: "66px",
+                  }}
+                />
+                <Grid item>
+                  <Typography
+                    // aman this style should be in the css file and refactor it
+                    style={{ color: "#6D6D6D", fontSize: "13px", pl: "30px" }}
+                    variant="body2"
+                  >
+                    {language[item.lang]}
+                  </Typography>
+                </Grid>
               </Grid>
-              <Grid item>
-                <Typography variant="body2">{language[item.lang]}</Typography>
-              </Grid>
-            </Grid>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </Link>
       </Grid>
     );
   }
 
   return (
     <>
-      <Container maxWidth="lg">
-        <Typography mb={2} mt={2} variant="h6">
+      <Container style={{ padding: "0" }} maxWidth="lg">
+        <Typography
+          style={{ marginLeft: isActive ? "5px" : "15px" }}
+          mb={2}
+          mt={2}
+          variant="h6"
+        >
           Upcoming Classes
         </Typography>
 
@@ -154,9 +193,10 @@ const PathwayCards = (props) => {
             display: "flex",
             maxWidth: "100%",
             overflowX: "scroll",
+            paddingBottom: "10px",
           }}
         >
-          {userEnrolledClasses?.slice(0, 3).map((item) => {
+          {userEnrolledClasses?.slice(0, sliceNumber).map((item) => {
             return (
               <>
                 <UpcomingClassCardComponent item={item} />

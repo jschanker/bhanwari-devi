@@ -7,109 +7,111 @@ import LaunchOutlinedIcon from "@mui/icons-material/LaunchOutlined";
 import { useSelector, useDispatch } from "react-redux";
 import { actions as pathwayActions } from "../PathwayCourse/redux/action";
 import ExternalLink from "../common/ExternalLink";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { breakpoints } from "../../theme/constant";
+import { PATHWAYS_INFO } from "../../constant";
 
 const menu = {
   About: [
-    { title: "Our Story", type: "internal", link: PATHS.OUR_STORY },
-    { title: "Meraki Team", type: "internal", link: PATHS.TEAM },
+    { name: "Our Story", type: "internal", path: PATHS.OUR_STORY },
+    { name: "Meraki Team", type: "internal", path: PATHS.TEAM },
   ],
-  LearningTracks: [
-    { title: "Python", code: "PRGPYT", type: "internal" },
-    { title: "Typing ", code: "TYPGRU", type: "internal" },
-    { title: "Spoken English", code: "SPKENG", type: "internal" },
-    { title: "Javascript", code: "JSRPIT", type: "internal" },
-    {
-      title: "Residential Programmes",
-      type: "internal",
-      link: PATHS.RESIDENTIAL_COURSE,
-    },
-    {
-      title: "Miscellaneous Courses",
-      type: "internal",
-      link: PATHS.MISCELLANEOUS_COURSE,
-    },
-  ],
-
+  LearningTracks: [],
   GetInvolved: [
-    // { title: "Be a Partner", type: "internal", link: PATHS.OUR_PARTNER },
     {
-      title: "Volunteer With Us",
+      name: "Volunteer With Us",
       type: "internal",
-      link: PATHS.VOLUNTEER_AUTOMATION,
+      path: PATHS.VOLUNTEER_AUTOMATION,
     },
     {
-      title: "Our Partners",
+      name: "Our Partners",
       type: "internal",
-
-      link: PATHS.OUR_PARTNER,
-    },
-
-    {
-      title: "Donate",
-      type: "external",
-      link: "https://www.navgurukul.org/donate",
+      path: PATHS.OUR_PARTNER,
     },
     {
-      title: "Careers",
+      name: "Careers",
       type: "external",
-      link: "https://recruiterflow.com/navgurukul/jobs",
+      path: "https://recruiterflow.com/navgurukul/jobs",
     },
   ],
 };
 
 const MenuList = (menuItem) => {
   const title = menuItem.split(/(?=[A-Z])/).join(" ");
+  const user = useSelector(({ User }) => User);
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { data } = useSelector((state) => {
+    return state.PathwaysDropdow;
+  });
+
+  // useEffect(() => {
+  //   dispatch(
+  //     pathwayActions.getPathwaysDropdown({
+  //       authToken: user,
+  //     })
+  //   );
+  // }, [dispatch, user]);
+
+  const miscellaneousPathway = data?.pathways.filter((pathway) =>
+    PATHWAYS_INFO.some((miscPathway) => pathway.name === miscPathway.name)
+  );
+  const pathwayData = data?.pathways
+    .filter((pathway) => !miscellaneousPathway.includes(pathway))
+    .concat(miscellaneousPathway);
+
+  if (menuItem === "LearningTracks") {
+    menu[menuItem] = pathwayData;
+  }
+
+  const subMenu = menu[menuItem];
 
   return (
     <>
       <Typography
         color="text.primary"
-        sx={{ mt: 4 }}
+        // sx={{ mt: 4 }}
         variant="subtitle1"
         component="div"
       >
         {title}
       </Typography>
       <List>
-        {menu[menuItem].map((item) => {
-          if (item.type === "internal") {
+        {subMenu?.map((item) => {
+          if (item.type === "external") {
             return (
-              <Link
-                to={
-                  item.id
-                    ? interpolatePath(PATHS.PATHWAY_COURSE, {
-                        pathwayId: item.id,
-                      })
-                    : item.link
-                }
+              <ExternalLink
                 className={classes.link}
+                href={item.path}
+                key={item.path}
               >
-                {/* {if (item?.title === "Donate"){
-                    
-                  }} */}
                 <Typography
                   variant="body2"
                   color="text.primary"
-                  sx={{ pb: "5px" }}
-                  className={classes.hover}
-                >
-                  {item.title}
-                </Typography>
-              </Link>
-            );
-          } else {
-            return (
-              <ExternalLink className={classes.link} href={item.link}>
-                <Typography
-                  variant="body2"
-                  color="text.primary"
-                  my={1}
+                  mb={1}
                   className={classes.CareerNDoner}
                 >
-                  {item.title} <LaunchOutlinedIcon sx={{ pl: "5px" }} />
+                  {item.name} <LaunchOutlinedIcon sx={{ pl: "5px" }} />
                 </Typography>
               </ExternalLink>
+            );
+          } else {
+            const toLink = item.id
+              ? interpolatePath(PATHS.PATHWAY_COURSE, {
+                  pathwayId: item.id,
+                })
+              : item.path;
+            return (
+              <Link key={toLink} to={toLink} className={classes.link}>
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  sx={{ pb: "8px" }}
+                  className={classes.hover}
+                >
+                  {item.name}
+                </Typography>
+              </Link>
             );
           }
         })}
@@ -142,14 +144,24 @@ function FooterIcon(props) {
 
 function Footer() {
   const classes = useStyles();
+  const user = useSelector(({ User }) => User);
   const dispatch = useDispatch();
-  const { data } = useSelector((state) => state.Pathways);
+  const { data } = useSelector((state) => {
+    return state.PathwaysDropdow;
+  });
 
-  useEffect(() => {
-    dispatch(pathwayActions.getPathways());
-  }, [dispatch]);
+  const isActive = useMediaQuery("(max-width:" + breakpoints.values.sm + "px)");
 
-  data &&
+  // useEffect(() => {
+  //   dispatch(
+  //     pathwayActions.getPathwaysDropdown({
+  //       authToken: user,
+  //     })
+  //   );
+  // }, [dispatch, user]);
+
+  menu.LearningTracks &&
+    data &&
     data.pathways &&
     data.pathways.forEach((pathway) => {
       menu.LearningTracks.forEach((item) => {
@@ -162,8 +174,8 @@ function Footer() {
   return (
     <Box maxWidth="false" bgcolor="primary.light">
       <Container maxWidth="xl">
-        <Grid container spacing={2} sx={{ mt: "50px" }}>
-          <Grid xs={12} md={4} sx={{ pl: { sm: 0, md: "16px" } }}>
+        <Grid container spacing={2} sx={{ mt: isActive ? "32px" : "64px" }}>
+          <Grid item xs={12} md={4} sx={{ pl: { sm: 0, md: "16px" } }}>
             <Box sx={{ display: "flex" }}>
               <Box className={classes.logo}>
                 <img
@@ -175,7 +187,7 @@ function Footer() {
             </Box>
             <Box className={classes.socialMedia} sx={{ display: "flex" }}>
               {["facebook", "linkedIn", "twitter"].map((imgName) => (
-                <FooterIcon name={imgName} />
+                <FooterIcon key={imgName} name={imgName} />
               ))}
             </Box>
             <Box className={classes.content}>
@@ -184,19 +196,34 @@ function Footer() {
               </Typography>
             </Box>
           </Grid>
-          <Grid xs={6} md={2} sx={{ pl: "15px" }}>
+          <Grid item xs={6} md={2} sx={{ pl: "15px" }}>
             {MenuList("About")}
           </Grid>
-          <Grid xs={6} md={2}>
+          <Grid item xs={6} md={2}>
             {MenuList("LearningTracks")}
           </Grid>
-          <Grid xs={6} md={2} sx={{ pl: "15px" }}>
+          <Grid item xs={6} md={2} sx={{ pl: "15px" }}>
             {MenuList("GetInvolved")}
+            <ExternalLink
+              className={classes.link}
+              sx={{ mt: "8px" }}
+              href="https://www.navgurukul.org/donate"
+            >
+              <Typography
+                variant="body2"
+                color="text.primary"
+                mb={1}
+                mt={-1}
+                className={classes.CareerNDoner}
+              >
+                Donate <LaunchOutlinedIcon sx={{ pl: "5px" }} />
+              </Typography>
+            </ExternalLink>
           </Grid>
-          <Grid xs={6} md={2}>
+          <Grid item xs={6} md={2}>
             <Typography
               color="text.primary"
-              sx={{ mt: 4, mb: 1 }}
+              sx={{ mb: 1 }}
               variant="subtitle1"
               component="div"
             >
@@ -228,7 +255,7 @@ function Footer() {
         <Divider variant="string" sx={{ pt: "25px" }} />
         <Box>
           <Grid container spacing={2} sx={{ m: "30px 0px 30px 0px" }}>
-            <Grid xs={12} md={6} sx={{ pl: { sm: 0, md: "10px" } }}>
+            <Grid item xs={12} md={6} sx={{ pl: { sm: 0, md: "10px" } }}>
               <Link to={PATHS.PRIVACY_POLICY} className={classes.link}>
                 <Typography
                   className={classes.hover}
@@ -240,6 +267,7 @@ function Footer() {
               </Link>
             </Grid>
             <Grid
+              item
               xs={12}
               md={6}
               sx={{
@@ -251,7 +279,7 @@ function Footer() {
                 variant="body2"
                 sx={{ textAlign: { sm: "left", md: "right" } }}
               >
-                Made with <span>❤️</span> for our students{" "}
+                Made with ❤️ for our students{" "}
               </Typography>
             </Grid>
           </Grid>
