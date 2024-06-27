@@ -1,6 +1,7 @@
 {
   "name": "meraki-web",
   "version": "0.1.0",
+  "homepage": "https://jschanker.github.io/bhanwari-devi",
   "private": true,
   "dependencies": {
     "@editorjs/code": "2.4.1",
