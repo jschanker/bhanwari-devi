@@ -23,7 +23,7 @@ Please refer to our [Contribution Guide](CONTRIBUTING.md).
 - *Don't shy away from sending a PR, we are more than happy to help you out in the process.*
 
 ## Code Structure
-- *The philosophy of the code strucutre is keeping things as small as they can be. Keeping functions small, components small, and files small. Basically keeping everything as small as they can be. Like Minions, We love Minions. Who doesn't .*
+- *The philosophy of the code structure is keeping things as small as they can be. Keeping functions small, components small, and files small. Basically keeping everything as small as they can be. Like Minions, We love Minions. Who doesn't .*
 
 
 ### Let's see the file structure now. 
